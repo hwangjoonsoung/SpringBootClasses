@@ -43,3 +43,31 @@
     <li>여기서 만약 return이 string이면 string Converter가 동작하고 객체면 json converter가 동작한다.</li>
 </ol>
 
+## 회원 관리 예제
+<hr>
+
+### web application layer structure
+<img src="C:\Users\adminmaster\IdeaProjects\SpringBootClasses\src\main\resources\img\web_application_structure.png"><br>
+<ul>
+    <li>controller : 웹 MVC의 컨트롤러 역활</li>
+    <li>service : 핵심 비즈니스 로직 구현</li>
+    <li>repository : DB접근 , 도메인 객체를 DB에 저장하고 관리</li>
+    <li>domain : 비즈니스 도메인 객체</li>
+</ul>
+
+### Member Repository Test Cast
+
+#### ※핵심 : 각 Test는 상호 의존적이면 안된다. 
+<ul>
+    <li> 각 Test는 상호 의존적이면 안되기 때문에 인스턴스를 초기화 해주는 것이 필요하다.<br> 따라서 @afterEach를 통해 인스턴스를 초기화 해주는 코드를 추가해야 한다.</li>
+    <li> Assertions class를 이용하여 검증을 진행할 수 있다</li>
+<ul>
+    <li> org.assert.core.api.Assertions</li>
+    <li> org.junit.jupiter.api</li>
+</ul>
+</ul>
+
+### Member Service Test Case
+short cut : ctrl + shift + T
+<ul>
+</ul>
