@@ -109,3 +109,5 @@ short cut : ctrl + shift + T
 <ul>
     <li>model.addAttribute()로 key , value를 지정하면 view에서 사용할 수 있다.</li>
 </ul>
+
+## 스프링 DB 접근 기술
