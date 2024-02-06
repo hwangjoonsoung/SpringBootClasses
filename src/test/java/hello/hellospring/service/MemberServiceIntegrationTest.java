@@ -1,32 +1,25 @@
 package hello.hellospring.service;
 
 import hello.hellospring.domain.Member;
-import hello.hellospring.repository.MemoryMemberRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import hello.hellospring.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SpringBootTest
+@Transactional
+class MemberServiceIntegrationTest {
 
-class MemberServiceTest {
-
+    @Autowired
     MemberService service;
-    MemoryMemberRepository repository;
-
-    @BeforeEach
-    public void beforeEach() {
-        this.repository = new MemoryMemberRepository();
-        this.service = new MemberService(repository);
-    }
-
-    @AfterEach
-    public void afterEach() {
-        repository.clearStore();
-    }
+    @Autowired
+    MemberRepository repository;
 
     @Test
     void join() {
@@ -66,12 +59,12 @@ class MemberServiceTest {
         service.join(member);
 
         Member member2 = new Member();
-        member2.setName("kim");
+        member2.setName("kim2");
         service.join(member2);
 
         List<Member> members = service.finMembers();
         int size = members.size();
-        assertThat(size).isEqualTo(2);
+        assertThat(size).isEqualTo(6);
 
     }
 
