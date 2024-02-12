@@ -25,7 +25,7 @@ class MemberServiceIntegrationTest {
     void join() {
         //given
         Member member = new Member();
-        member.setName("hwnag");
+        member.setName("jang");
 
         //when
         Long join = service.join(member);
@@ -39,10 +39,10 @@ class MemberServiceIntegrationTest {
     @Test
     public void exceptionTest() {
         Member member = new Member();
-        member.setName("hwang");
+        member.setName("Lee");
 
         Member member2 = new Member();
-        member2.setName("hwang");
+        member2.setName("Lee");
 
         //Assertions.assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
         service.join(member);
@@ -55,7 +55,7 @@ class MemberServiceIntegrationTest {
     @Test
     void finMembers() {
         Member member = new Member();
-        member.setName("hwang");
+        member.setName("hwang2");
         service.join(member);
 
         Member member2 = new Member();
@@ -64,7 +64,7 @@ class MemberServiceIntegrationTest {
 
         List<Member> members = service.finMembers();
         int size = members.size();
-        assertThat(size).isEqualTo(6);
+        assertThat(size).isEqualTo(7);
 
     }
 

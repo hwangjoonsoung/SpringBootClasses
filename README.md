@@ -8,7 +8,7 @@
 
 ### spring running
 
-<img src="/src/main/resources/img/spring.png"><br>
+<img src="src/main/resources/img/spring.png"><br>
 <ul>
 <li>컨트롤러에서 return을 string으로 하면 view reslover가 화면을 찾아서 처리한다.</li>
 <li>resource:templates/+{return 받은 view name}+.html</li>
@@ -33,18 +33,18 @@
 
 ### static page running
 
-<img src="/src/main/resources/img/static_page_running.png"><br>
+<img src="src/main/resources/img/static_page_running.png"><br>
 
 ## MVC pattern and template engine
 
-<img src="/src/main/resources/img/mvc_pattern.png"><br>
+<img src="src/main/resources/img/mvc_pattern.png"><br>
 <ol>
     <li>view는 보여주는 것에 집중해야 한다.</li>
 </ol>
 
 ## API
 
-<img src="/src/main/resources/img/API.png"><br>
+<img src="src/main/resources/img/API.png"><br>
 <ol>
     <li>response body가 있으면 http Message Converter가 동작한다</li>
     <li>여기서 만약 return이 string이면 string Converter가 동작하고 객체면 json converter가 동작한다.</li>
@@ -56,7 +56,7 @@
 
 ### web application layer structure
 
-<img src="/src/main/resources/img/web_application_structure.png"><br>
+<img src="src/main/resources/img/web_application_structure.png"><br>
 <ul>
     <li>controller : 웹 MVC의 컨트롤러 역활</li>
     <li>service : 핵심 비즈니스 로직 구현</li>
@@ -111,7 +111,7 @@ short cut : ctrl + shift + T
 </ul>
 
 ## 스프링 DB 접근 기술
-<img src="/src/main/resources/img/spring_bean_change.png">
+<img src="src/main/resources/img/spring_bean_change.png">
 <ul>
     <li>@Configuration코드만 살짝 변경을 해주면 편리하게 변경할 수 있다.<br>이는 곳 interface를 이용하서 상속관계를 가지는 것과 비슷하다.</li>
     <ul>
@@ -122,4 +122,30 @@ short cut : ctrl + shift + T
 ### 스프링 통합 TEST
 <ul>
     <li>@Transectional을 사용하는 이유는 테스트 상황에서는 autocommit을 false로 만들어 둬야 하기 때문이다.</li>
+</ul>
+
+### JPA
+JPA annotation
+<ol>
+    <li>@Entity : table mapping annotation</li>
+    <li>@Id : PK column</li>
+    <li>@GeneratedValue : 자동으로 생성되는 값</li>
+<ol>
+    <li></li>
+</ol>
+    <li>@Column : column mapping</li>
+</ol>
+
+### Spring Data JPA
+spring data jpa를 보면 기본적인 조회 메소드가 이미 만들어 져 있다.<br>
+<img src="src/main/resources/img/jpaRepository.png"><br>
+<img src="src/main/resources/img/SpringDataJpa.png"><br>
+
+하지만 findByName과 같은 특정 컬럼을 이용한 select 기능은 부여하지 않는다<br>
+따라서 findByName method와 같은 규칙으로 method를 생성하면 seelct m from member m where m.name = ? 으로 sql를 만들어 준다.
+
+# ETC Annotation
+
+<ul>
+    <li>@Commit : Transactional 한 상태에서 commit 을 하면 바로 DB에 반영 된다.</li>
 </ul>
