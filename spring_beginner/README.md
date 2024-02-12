@@ -1,7 +1,7 @@
 # SpringBootClasses
 
 ##프로젝트 환경설정
-<hr>
+
 ### spring boot documentation
 <a href="srping.io">srping.io</a> < spring boot < learn 에서 documenttation을 확인할 수 있다.
 <br>여기서 spring이 index를 찾는 과정을 볼 수 있다.
@@ -29,8 +29,6 @@
 
 ## 스프링 웹 개발 기초
 
-<hr>
-
 ### static page running
 
 <img src="src/main/resources/img/static_page_running.png"><br>
@@ -52,7 +50,7 @@
 
 ## 회원 관리 예제
 
-<hr>
+
 
 ### web application layer structure
 

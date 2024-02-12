@@ -64,7 +64,7 @@ class MemberServiceIntegrationTest {
 
         List<Member> members = service.finMembers();
         int size = members.size();
-        assertThat(size).isEqualTo(7);
+        assertThat(size).isEqualTo(9);
 
     }
 
