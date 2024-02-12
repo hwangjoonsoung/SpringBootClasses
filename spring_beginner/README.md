@@ -29,8 +29,6 @@
 
 ## 스프링 웹 개발 기초
 
-
-
 ### static page running
 
 <img src="src/main/resources/img/static_page_running.png"><br>
