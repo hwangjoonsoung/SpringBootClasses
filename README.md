@@ -144,7 +144,28 @@ spring data jpa를 보면 기본적인 조회 메소드가 이미 만들어 져 
 하지만 findByName과 같은 특정 컬럼을 이용한 select 기능은 부여하지 않는다<br>
 따라서 findByName method와 같은 규칙으로 method를 생성하면 seelct m from member m where m.name = ? 으로 sql를 만들어 준다.
 
+## AOP (Aspect Oriented Programming)
+
+### AOP가 필요한 상황
+<ol>
+    <ul>모든 메소드의 호출 시간을 측정하고 싶다면?</ul>
+    <ul>공통 관심 사항과 핵심 관심 사항의 결합으로 인한 유지보수 힘듬</ul>
+    <ul>공통 관심 사항을 수정하는 경우 모든 로직에 접근해서 수정해야 하는 불편함</ul>
+</ol>
+
+### AOP 적용
+#### 공통 관심 사항과 핵심 관심 사항의 분리
+<img src="src/main/resources/img/AOP.png">
+
+#### AOP 적용 방식
+<img src="src/main/resources/img/AOPWorking.png">
+<ul>
+    <li>Proxy를 이용해서 바로 method를 실행하는 것이 아닌 proceed가 실행될때 사용된다.</li>
+</ul>
+
+
 # ETC Annotation
+
 
 <ul>
     <li>@Commit : Transactional 한 상태에서 commit 을 하면 바로 DB에 반영 된다.</li>
