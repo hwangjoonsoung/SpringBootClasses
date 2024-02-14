@@ -2,7 +2,7 @@
 
 ## 인터넷 네트워크
 
-<ul>
+<ul>ㅔ
     <li>클라이언트와 서버가 통신할때 인터넷을 통해 통신해야 한다면 어떻게 해야할까?</li>
     <li>그러면 어떤 규칙과 어떤 방식을 통해 데이터를 주고 받을까?</li>
 </ul>
@@ -31,3 +31,58 @@
     <li>프로그램 구분 : 같은 ip를 사용하는 서버에서 통신하는 애플리케이션이 둘 이상이면?<br>
     ->음악을 들으며 게임을 하는 상황에 어떤 패킷이 음악에 필요한 패킷인지</li>
 </ul>
+
+### TCP,UDP
+#### 프로토콜 계층
+<img src="img/Protocol.png">
+
+#### TCP/IP 패킷 정보
+<img src="img/TCP_IP_Packet.png">
+
+#### TCP 특징
+<ul>
+    <li>
+        <div>
+            연결지향 : 3 way hand handshake
+            <img src="img/3WayHandShake.png">
+        </div>
+    </li>
+    <li>
+        <div>
+            데이터 전달 보증
+            <img src="img/DataDeliveryGuarantee.png">
+        </div>
+    </li>
+    <li>
+        <div>
+            순서 보장
+            <img src="img/OrderGuarantee.png">
+        </div>
+    </li>
+<li>신뢰할 수 있음</li>
+<li>조금은 느림</li>
+</ul>
+
+#### UDP
+<ul>
+    <li>3 way handshake를 하지 않기 때문에 빠르지만 연결지향적이지 않다.</li>
+    <li>IP와 거의 같다 + port + 체크섬</li>
+    <li>애플리케이션에서 추가 작업 필요</li>
+</ul>
+
+### Port
+<pre>
+한번에 둘 이상 연결하려면 어떻게 해야 할까?
+하나의 클라이언트가 두개의 서버에 연결한다면 서버는 하나의 IP에 데이터를 보내기만 하면된다.
+하지만 클라이언트는 어떤 데이터가 어떤 어플리케이션에 사용하는 데이터인지 구분해야 한다.
+이때 이용하는 것이 port를 사용하는 것이다.
+</pre>
+<img src="img/port.png">
+
+### DNS
+<pre>
+naver에 접근하려면 naver의 ip를 알아야 한다.
+근데 매번 ip를 찾기도 힘들고 외우기도 힘들다.
+DNS는 naver.com과 naver의 서버 IP를 mapping 되어 있는 시스템으로서,
+우리가 naver에 접근할때 ip를 찾아주는 시스템이다.</pre>
+<img src="img/DNS.png">
