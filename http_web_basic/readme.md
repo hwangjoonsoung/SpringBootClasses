@@ -17,10 +17,10 @@
 <ol>
     <li>출발지 ip와 목적지 ip 패킷에 입력</li>
     <li>패당 패킷에 전달할 데이터 입력</li>
-    <li>ip protocol에 의해서 데이터 전달 <br></li>
+    <li>ip protocol에 의해서 데이터 전달</li>
         <ul>
-        <li>이때 노드간의 데이터 전송이 지속적으로 이루어 진다</li>
-        <li>request할때의 데이터를 전송받는 노드들과 response할때 데이터를 전달받는 노드들은 다를 수 있다.</li>
+            <li>이때 노드간의 데이터 전송이 지속적으로 이루어 진다</li>
+            <li>request할때의 데이터를 전송받는 노드들과 response할때 데이터를 전달받는 노드들은 다를 수 있다.</li>
         </ul>
 </ol>
 <img src="img/client_sending_packet.png" alt="">
@@ -28,7 +28,7 @@
 <ul>
     <li>비 연결성 : 패킷을 받을 대상이 없어도 데이터는 전송한다.</li>
     <li>비 신뢰성 : 패킷이 중간에 사라질 가능성, 패킷이 보내진 순서대로 오지 않을 가능성이 있다.</li>
-    <li>프로그램 구분 : 같은 ip를 사용하는 서버에서 통신하는 애플리케이션이 둘 이상이면?<br>
+    <li>프로그램 구분 : 같은 ip를 사용하는 서버에서 통신하는 애플리케이션이 둘 이상이면?
     ->음악을 들으며 게임을 하는 상황에 어떤 패킷이 음악에 필요한 패킷인지</li>
 </ul>
 
@@ -104,7 +104,7 @@ DNS는 naver.com과 naver의 서버 IP를 mapping 되어 있는 시스템으로�
     <li>URL : Resource Locator : 자원의 위치를 지정 </li>
     <li>URN : Resource Name : 자원의 이름를 부여 </li>
     <ul>
-    <li>URN 이름만으로 실제 리소스를 찾을 수 있는 방법이 보편화 되지 않음. </li>
+        <li>URN 이름만으로 실제 리소스를 찾을 수 있는 방법이 보편화 되지 않음. </li>
     </ul>
 </ul>
 
@@ -118,34 +118,34 @@ https://www.google.com:443/search?q=hello&hl=ko
 <ul>
     <li>scheme</li>
         <ul>
-        <li>주로 프로토콜을 사용</li>
+            <li>주로 프로토콜을 사용</li>
         </ul>
     <li>userinfo@</li>
         <ul>
-        <li>URL에 사용자 정보를 포함해서 인증</li>
-        <li>거의 사용하지 않음</li>
+            <li>URL에 사용자 정보를 포함해서 인증</li>
+            <li>거의 사용하지 않음</li>
         </ul>
     <li>Host</li>
         <ul>
-        <li>호스트명</li>
-        <li>도메인명 또는 IP 주소를 직접 사용가능</li>
+            <li>호스트명</li>
+            <li>도메인명 또는 IP 주소를 직접 사용가능</li>
         </ul>
     <li>Port</li>
         <ul>
-        <li>접속 포트</li>
+            <li>접속 포트</li>
         </ul>
     <li>Path</li>
         <ul>
-        <li>리소스 경로, 계층적 구조로 이뤄져 있음</li>
+            <li>리소스 경로, 계층적 구조로 이뤄져 있음</li>
         </ul>
     <li>쿼리스트링</li>
         <ul>
-        <li>key value 의 형태로 데이터를 전송</li>
+            <li>key value 의 형태로 데이터를 전송</li>
         </ul>
     <li>fragment</li>
         <ul>
-        <li>html의 내부 북마크 같은 곳에 사용함</li>
-        <li>서버에 데이터를 전송하지는 않음</li>
+            <li>html의 내부 북마크 같은 곳에 사용함</li>
+            <li>서버에 데이터를 전송하지는 않음</li>
         </ul>
 </ul>
 
@@ -162,7 +162,70 @@ https://www.google.com:443/search?q=hello&hl=ko
     <li>클라이언트에게 전송</li>
 </ol>
 
+## http의 기본
+### 클라이언트 서버 구조 특징
+<ul>
+    <li>* 각각 독립적으로 구조화 되어 있기 때문에 클라이언트, 서버 내부적으로 변경에 용이함</li>
+    <li>Request Response 구조</li>
+    <li>클라이언트는 서버에 요청을 보내고, 응답을 대기</li>
+    <li>서버가 요청애 대한 결과를 만들어서 응답</li>
+</ul>
 
+### stateful , stateless
+<ul>
+    <li>stateful : 서버가 클라이언트의 상태를 보존하는 것</li>    
+    <li>stateless : 서버가 클라이언트의 상태를 보존하지 않는것</li>    
+        <ul>
+            <li>무상태는 응답 서버를 쉽게 바꿀수 있다 == 무한한 서버 증설이 가능하다 </li>
+            <li>서버가 분리 되어 있는 경우 서버 1이 장애가 나는 경우 다른 서버로 클라이언트의 요청을 전달 할 수 있다.</li>
+        </ul>
+</ul>
 
+#### 실무의 한계
+<ul>
+    <li>모든것을 무상태로 설계할 수 있는 경우도 있고 아닌경우도 있다.</li>
+        <ul>
+            <li>무상태 : 정적페이지, 로그인이 필요없는 단순한 서비스 소개 화면</li>
+            <li>상태 유지 : 로그인 이후 화면 </li>
+        </ul>
+    <li>로그인 한 사용자의 경우 로그인 정보를 서버에 유지</li>
+    <li>상태 유지는 일반적으로 쿠키와 세션을 사용해서 상태유지한다</li>
+    <li>상태 유지 최소한만 사용</li>
+</ul>
 
+### 비연결성
+<img src="img/persistent_connections.png">
+<pre>
+연결을 유지하게 되면 하나의 서버가 많은 클라이언트와 연결되어 있음으로 서버에 부하가 걸린다.
+이를 방지하기 위해서 http는 연결을 유지하지 않는다.
+이는 양날의 검으로 작용하는데 장점으로는 서버의 자원을 효율적으로 사용할 수 있지만,
+서버와 다시 연결한다고 하면 3 way handshake를 다시 진행해야 하며, 추가적으로 많은 파일을 다시 받아야 한다.
+이를 해결하기 위해서 persistent connections로 문제를 해결한다.
+</pre>
+
+### HTTP Message
+#### HTTP 메시지 구조
+<img src="img/http_message.png">
+<ul>
+    <li>request</li>
+        <ul>
+            start-line
+            <li>http method : 서버가 수행해야 할 동작 지정<BR>GET, POST, PUT, DELETE</li>
+            header            
+            <li>요청 대상 : 절대경로= "/"로 시작하는 경로</li>
+            <li>HTTP VERSION</li>
+        </ul>
+    <li>response</li>
+        <ul>
+            start-line
+            <li>http 버전</li>
+            <li>http 상태코드 : 성공여부 <br> 200, 400, 500</li>
+            header
+            <li>인코딩 방식</li>
+            <li>필요시 임의의 header 추가 가능</li>
+            body
+            <li>실제 전송할 테이더 </li>
+            <li>html, json, 영상 ,image등등 전부 가능</li>
+        </ul>
+</ul>
 
