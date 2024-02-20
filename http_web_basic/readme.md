@@ -229,3 +229,143 @@ https://www.google.com:443/search?q=hello&hl=ko
         </ul>
 </ul>
 
+## HTTP Method
+<ul>
+    <li>GET : 리소스 조회</li>
+    <li>POST : 요청 데이터 처리, 등록</li>
+    <li>PUT : 리소스를 대체, 리소스가 없으면 생성</li>
+    <li>PATCH : 리소스를 부분 변경</li>
+    <li>DELETE : 삭제</li>
+</ul>
+
+### HTTP API를 만들어 보자.
+#### 리소스와 행위를 분리
+<ul>
+    <li>URI는 리소스만 식별</li>
+    <li>리소스와 해당 리로스를 대상으로 하는 행위를 분리</li>
+    <ul>
+        <li> 리소스 : 회원</li>
+        <li> 행위 : 등록,수정,삭제,조회</li>
+    </ul>
+</ul>
+
+### GET,POST
+#### GET
+<ul>
+    <li>리소스 조회</li>
+    <li>서버에 전달하고 싶은 데이터를 query string을 통해서 전달</li>
+    <li>메시지 바디를 사용해서 전달할 수 있지만 지원하지 않는 곳이 많아서 권장하지 않는다.</li>
+</ul>
+
+##### GET 과정
+<ol>
+    <li><img src="img/GET_procedure_1.png"></li>
+    <li><img src="img/GET_procedure_2.png"></li>
+    <li><img src="img/GET_procedure_3.png"></li>
+</ol>
+
+#### POST
+
+<ul>
+    <li>요청 데이터 처리</li>
+    <li>메시지 바디를 통해 서버로 요청 데이터 전달</li>
+    <li>서버는 요청 데이터를 처리</li>
+    <ul>
+        <li>메시지 바디를 통해 들어온 데이터를 처리하는 모든 기능을 수행</li>
+    </ul>
+    <li>주로 전달된 데이터로 신규 리소스 등록, 프로세스 처리에 사용</li>
+</ul>
+
+##### POST의 과정
+<ol>
+    <li><img src="img/POST_procedure_1.png"></li>
+    <li><img src="img/POST_procedure_2.png"></li>
+    <li><img src="img/POST_procedure_3.png"></li>
+</ol>
+
+##### POST의 역활
+<ul>
+    <li>새 리소스 등록</li>
+    <li>요청 데이터 처리</li>
+    <ul>
+        <li>프로세스 로직의 동작</li>
+        <li>결과로 데이터가 생성되지 않는 경우가 있을 수 있다</li>
+    </ul>
+    <li>다른 메서드로 처리하기 어려운 경우</li>
+    <ul>
+        <li>JSON으로 조회 해야 하는데 GET을 사용하기 어려울 때</li>
+        <li>애매하면 POST</li>
+    </ul>
+</ul>
+
+#### PUT
+<ul>
+    <li>리소스를 대체, 덮어 씌워짐. 즉, 기존 리소스를 삭제하고 새로운 리소스를 넣는다.</li>
+    <ul>
+        <li>리소스가 있으면 대체</li>
+        <li>리소스가 없으면 생성</li>
+    </ul>
+    <li>클라이언트가 리소스의 위치를 알고 지정</li>
+</ul>
+
+##### PUT의 역활
+###### 리소스가 있는 경우
+<ol>
+    <li><img src="img/PUT_procedure_1.png"></li>
+    <li><img src="img/PUT_procedure_2.png"></li>
+</ol>
+
+###### 리소스가 없는 경우
+<ol>
+    <li><img src="img/PUT_procedure_3.png"></li>
+    <li><img src="img/PUT_procedure_4.png"></li>
+</ol>
+
+###### 리소스가 있는데 일부 데이터만 보내는 경우
+<ol>
+    <li><img src="img/PUT_procedure_5.png"></li>
+    <li><img src="img/PUT_procedure_6.png"></li>
+</ol>
+
+#### PATCH
+<ul>
+    <li>리소스를 부분 변경</li>
+</ul>
+
+#### DELETE
+<ul>
+    <li>리소스를 삭제</li>
+</ul>
+
+### HTTP 메서드의 속성
+<img src="img/http_idempotent.png">
+
+#### 안전
+<ul>
+    <li>호출해도 리소스를 변경하지 않는다.</li>
+</ul>
+
+#### 멱등
+<ul>
+    <li>여러번 호출하든 결과는 같아야 한다.</li>
+    <li>멱등 메서드</li>
+    <ul>
+        <li>GET : 여러번 조회해도 같은 결과가 조회된다.</li>
+        <li>PUT : 결과를 대체한다.따라서 같은 요청을 여러번 해도 최종 결과는 같다.</li>
+        <li>DELETE : 결과를 삭제한다. 따라서 같은 요청을 여러번 하면 삭제된 결과로 같다.</li>
+        <li style="color: red">POST : 두번 호출하면 같은 결제가 중복해서 발생할 수 있다. 즉, 멱등하지 않다. </li>
+    </ul>
+</ul>
+
+##### 멱등이 필요한 이유
+<ul>
+    <li>자동 복구 메커니즘</li>
+    <li>서버가 정상적으로 동작하지 않았을때, 동일한 요청을 보내도 되는가?</li>
+</ul>
+
+#### 캐시가능
+<ul>
+    <li>응답 결과 리소스를 캐시해서 사용해도 되는가?</li>
+    <li>GET,POST,HEAD,PATCH 캐시가능</li>
+    <li>실제로는 GET,HEAD만 캐시로 사용한다</li>
+</ul>
