@@ -369,3 +369,62 @@ https://www.google.com:443/search?q=hello&hl=ko
     <li>GET,POST,HEAD,PATCH 캐시가능</li>
     <li>실제로는 GET,HEAD만 캐시로 사용한다</li>
 </ul>
+
+## HTTP 매서드의 활용
+### 클라이언트에서 서버로 데이터 전송
+<ol>
+    <li>정적 데이터를 조회 : ex) /static/star.jpg</li>
+    <li>동적 데이터를 조회 : ex) /search?id=100&p=3&lang=ko</li>
+    <li>HTML Form 데이터 전송 : <br></li>
+<ul>
+    <li>application/x-www-form-urlencoded : form data 한번에 전송.<br><img src="img/POST_save.png"></li>
+    <li>Multipart/form-date : 파일과 같은 바이너리 데이터를 전송시 사용</li>
+</ul>
+</ol>
+
+### HTTP API 설계 예시
+
+[//]: # (#### 회원관리 API 설계)
+
+[//]: # (<ul>)
+
+[//]: # (    <li>회원 목록 : /members -> GET</li>)
+
+[//]: # (    <li>회원 등록 : /members -> POST</li>)
+
+[//]: # (    <li>회원 조회 : /members/{id} -> GET</li>)
+
+[//]: # (    <li>회원 수정 : /members/{id} -> PATCH,PUT,POST</li>)
+
+[//]: # (    <li>회원 삭제 : /members/{id} -> DELETE</li>)
+
+[//]: # (</ul>)
+
+#### POST - 신규 자원 등록의 특징
+<ul>
+    <li>클라이언트는 등록될 리소스의 URI를 모른다</li>
+    <li>새로운 리소스가 등록되면 URI를 생성해준다.</li>
+    <li>location을 통해 새로 등록된 URI를 확인할 수 있다.<br><img src="img/POST_procedure_3.png"></li>
+    <li>컬렉션</li>
+    <ul>
+        <li>서버가 관리하는 리소스  디렉토리</li>
+        <li>서버가 리소스의 URI를 생성하고 관리</li>
+        <li>컬렉션은 /members가 된단</li>
+    </ul>
+</ul>
+
+#### PUT - 신규 자원 등록의 특징
+<ul>
+    <li>클라이언트가 리소스의 URI를 알고 있어야 한다.</li>
+    <ul>
+        <li>파일 등록 /files/{filename} -> put</li>
+        <li>PUT /files/stars.jpg </li>
+    </ul>
+    <li>클라이언트가 직접 리소스의 URI를 지정한다.</li>
+    <li>스토어</li>
+    <ul>
+        <li>클라이언트가 과니하는 리소스 저장소</li>
+        <li>클라이언트가 리소스의 URI를 알고 관리</li>
+        <li>스토어는 /files가 된다</li>
+    </ul>
+</ul>
