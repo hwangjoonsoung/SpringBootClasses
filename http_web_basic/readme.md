@@ -571,4 +571,250 @@ https://www.google.com:443/search?q=hello&hl=ko
     </ul>
 </ul>
 
+## HTTP 헤더 - 일반 헤더
+### HTTP 헤더 개요 
+<img src="img/Http_body.png">
+<ul>
+    <li>메시지 본문을 통해 표현 데이터 전달</li>
+    <li>메시지 본문 = 페이로드</li>
+    <li>표현은 요청이나 응답에서 전달할 실제 데이터</li>
+    <li>표현 헤더는 표현 데이터를 해석할 수 있는 정보 제공 -> 데이터 유형(html, json), 데이터 길이, 압축 정보 등등</li>
+</ul>
 
+### 표현
+<ul>
+    <li>Content-Type: 표현 데이터의 형식</li>
+    <ul>
+        <li>미디어 타입, 문자 인코딩</li>
+    </ul>
+    <li>Content-Encoding: 표현 데이터의 압축방식</li>
+    <ul>
+        <li>표현 데이터를 압축하기 위해 사용</li>
+        <li>데이터를 전달하는 곳에서 압축 후 인코딩 헤더 추가</li>
+        <li>데이터를 읽는 쪽에서 인코딩 헤더의 정보로 압축 해재</li>
+    </ul>
+    <li>Content-Language: 표현 데이터의 자연언어</li>
+    <ul>
+        <li>표현 데이터의 자연 언어를 표현</li>
+    </ul>
+    <li>Content-Length: 표현 데이터의 길이</li>
+    <ul>
+        <li>바이트 단위</li>
+        <li>Transfer-Encoding(전송 코딩)을 사용하면 Content-Length를 사용하면 안됨 : Transfer-Encoding안에 정보가 들어가 있음</li>
+    </ul>
+</ul>
+
+#### 콘텐츠 협상
+※ 클라이언트가 선호하는 형식으로 콘텐츠를 받을 수 있도록 우선순위를 정해서 요청하는 방법
+<img src="img/Content_Negotiation.png">
+<ul>
+    <li>Accept: 클라이언트가 선호하는 미디어 타입 전달</li>
+    <li>Accpet-Charset : 클라이언트가 선호하는 문자 인코딩</li>
+    <li>Accpet-Encoding : 클라이언트가 선호하는 압축 인코딩</li>
+    <li>Accpet-Language : 클라이언트가 선호하는 자연언어 </li>
+</ul>
+
+##### 협상과 우선순위1
+<ul>
+<img src="img/Content_Negotiation2.png">
+    <li>Quality Values 값 사용</li>
+    <li>0~1,사이의 값으로 클 수록 우선순위가 높다</li>
+    <li>생략하면 1이다.</li>
+</ul>
+
+##### 협상과 우선순위2
+<ul>
+    <li>구체적인 것이 우선한다.</li>
+</ul>
+
+##### 협상과 우선순위3
+<ul>
+    <li>구체적인 것을 기준으로 미디어 타입을 맞춘다</li>
+    <li>Accept: text/*q=0.3, text/html;q=0.7,text/html;level=1,text/html;level=2;q=0.4,*/*;q=0.5</li>
+    <img src="img/Content_Negotiation3.png\">
+</ul>
+
+### 전송방식
+<ul>
+    <li>단순 전송</li>
+    <ul>
+        <li><img src="img/simple_transmission.png"></li>
+    </ul>
+    <li>압축 전송</li>
+    <ul>
+        <li><img src="img/compressed_transmission.png"></li>
+        <li>content-encoding을 통해 어떻게 압축 되었는지 확인할수 있도록 한다</li>
+    </ul>
+    <li>분할 전송</li>
+    <ul>
+        <li><img src="img/Split_transmission.png"></li>
+        <li>5를 보내면 5만큼의 데이터를 받고 다시 5를 보내면 이후 5만큼의 데이터를 받는다</li>
+    </ul>
+    <li>범위 전송</li>
+    <ul>
+        <li><img src="img/range_transmission.png"></li>
+    </ul>
+</ul>
+
+### 일반 정보
+<ul>
+    <li>From</li>
+    <ul>
+        <li>유저 에이전트의 이메일 정보</li>
+        <li>일반적으로 잘 사용되지 않음.</li>
+        <li>검색 엔진 같은 곳에서 주로 사용</li>
+        <li>요청에서 사용</li>
+    </ul>
+    <li>Referer</li>
+    <ul>
+        <li>이전 웹 페이지의 주소</li>
+        <li>현재 요청된 페이지의 이전 웹 페이지 주소</li>
+        <li>A->B로 이동하는 경우 B를 요청할 때 Referer:a 를 포함해서 요청</li>
+        <li>Referer를 통해서 유입경로 분석 가능</li>
+        <li>요청에서 사용</li>
+    </ul>
+    <li>User Agent</li>
+    <ul>
+        <li>유저 애플리케이션 정보</li>
+        <li>클라이언트의 애플리에키션의 정보(웹 브라우저 정보 등등)</li>
+        <li>통계 정보</li>
+        <li>어떤 종류의 브라우저에서 장애가 발생하는지 파악가능</li>
+        <li>요청에서 사용</li>
+    </ul>
+    <li>Server</li>
+    <ul>
+        <li>요청을 처리하는 ORIGIN 서버의 소프트웨어 정보</li>
+        <li>Server: Apache/2.2.22(Debian)</li>
+        <li>server: nginx</li>
+        <li>응답에서 사용</li>
+    </ul>
+    <li>Date</li>
+    <ul>
+        <li>메시지가 발생한 날짜와 시간</li>
+        <li>응답에서 사용</li>
+    </ul>
+</ul>
+
+### 특별한 정보
+<ul>
+    <li>Host</li>
+    <ul>
+        <li>요청한 호스트 정보(도메인)</li>
+        <li>요청에서 사용</li>
+        <li>필수</li>
+        <li>하나의 서버가 여러 도메인을 처리할때</li>
+        <li>하나의 IP주소에 여러 도메인이 적용되어 있을 때</li>
+        <li><img src="img/virtual_domain.png"></li>
+    </ul>
+    <li>Location</li>
+    <ul>
+        <li>페이지 리다이렉션</li>
+        <li>300대 응답에 location이 있으면 자동으로 redirect</li>
+        <li>201의 location 값은 요청에 의해 생성된 리소스 URI</li>
+        <li>300대 location 값은 요청을 자동으로 redirect 하기위한 대상 리소스를 가리킴</li>
+    </ul>
+    <li>Allow</li>
+    <ul>
+        <li>허용 가능한 HTTP 메서드</li>
+        <li>405에서 응답에 포함해야한다.</li>
+        <li>405응답에 보면 가능한 메서드를 알려주는 헤더정보라고 할 수 있다.</li>
+    </ul>
+    <li>Retry-after</li>
+    <ul>
+        <li>유저 에이전트가 다음 요청을 하기까지 기다려야 하는 시간</li>
+        <li>503과 같은 서비스 이용 불가할때</li>
+    </ul>
+</ul>
+
+### 인증
+<ul>
+    <li>Authorization</li>
+    <ul>
+        <li>클라이언트 인증 정보를 서버에 전달</li>
+    </ul>
+    <li>WWW-Authenticate</li>
+    <ul>
+        <li>리소스 접근시 필요한 인증 방법 정의</li>
+        <li>401 Unauthorized 응답과 함께 사용</li>
+    </ul>
+</ul>
+
+### 쿠키
+<ul>
+    <li>Set-Cookie : 서버에서 클라이언트로 쿠키 전달(응답)</li>
+    <li>Cookie : 클라이언트가 서버에서 받은 쿠키를 저장하고,HTTP 요청시 서버로 전달</li>
+</ul>
+
+#### 쿠키가 동작하는 과정
+<ol>
+    <li>로그인 요청을 보내면 서버가 쿠키를 생성해서 응답으로 보냄</li>
+    <li>브라우저 내부에 쿠키 저장소에 응답으로 받은 쿠키를 저장</li>
+    <li>이후 브라우저는 요청을 할때마다 쿠키가 있는지 확인을 하고 해당 쿠기를 같이 요청으로 보냄</li>
+    <li>서버는 해당 쿠키로 상태를 알수 있다.</li>
+</ol>
+
+#### 쿠키의 상세 정보
+<ul>
+    예) set-cookie:sessionId=test1234; expires=Sat, 26-Dec-2020 00:00:00 GMT; path=/; domain=.google.com; Secure
+    <li>사용처</li>
+    <ul>
+        <li>사용자 로그인 세션 관리 : 서버가 sessionID를 생성하고 DB에 저장, 이후 cookie가 왔을때 해당 ID와 일치하는 값이 있으면 승인</li>
+        <li>광고 정보 트래킹</li>
+    </ul>
+    <li>쿠키 정보는 항상 서버에 전송됨</li>
+    <ul>
+        <li>네트워크 트래픽 추가 유발</li>
+        <li>최소한의 정보만 사용(session id, 인증 토큰)</li>
+        <li>서버에 전송하지 않고, 웹 브라우저 내부에 데이터를 저장하고 싶으면 웹 스토리지 사용</li>
+    </ul>
+    <li>민감한 정보는 저장하면 안됨</li>
+</ul>
+
+#### 쿠키의 생명주기
+<ul>
+    <li>expires를 통해서 만료일을 지정할 수 있다.</li>
+    <li>max-age를 통해서 유효시간을 지정할 수 있다. - 0을 통해 쿠키를 삭제할 수 있음</li>
+    <li>session cookie : 만료 날짜를 생략하면 브라우저 종료시 까지만 유지</li>
+    <li>영속 쿠키 : 만료 날짜를 입력하면 해당 날짜까지 유지</li>
+</ul>
+
+#### 쿠키의 도메인
+<ul>
+    <li>명시: 명시한 문서 기준 도메인 + 서브 도메인 포함</li>
+    <li>domain = example.org를 지정해서 쿠키 생성</li>
+    <ul>
+        <li>example.org와 dev.example.org 접근 가능</li>
+    </ul>
+    <li>생략: 현재 문서 기준 도메인만 적용</li>
+    <li>example.org에서 쿠키를 생성하고 domain 지정을 생략</li>
+    <ul>
+        <li>example.org에서만 쿠키 접근</li>
+        <li>dev.example.org는 쿠키 미접근</li>
+    </ul>
+</ul>
+
+### 쿠키의 경로
+<ul>
+    예)path=/home
+    <li>해당 경로의 하위 모든 경로는 접근할 수 있음</li>
+</ul>
+
+### 쿠키의 보안
+<ul>
+    <li>Secure</li>
+    <ul>
+        <li>쿠키는 http,https를 구분하지 않고 전송</li>
+        <li>Secure를 적용하면 https인 경우에만 전송</li>
+    </ul>
+    <li>HttpOnly</li>
+    <ul>
+        <li>XSS 공격방지</li>
+        <li>자바스크립트 접근 불가</li>
+        <li>HTTP 전송에만 사용</li>
+    </ul>
+    <li>SameSite</li>
+    <ul>
+        <li>XSRF 공격방지</li>
+        <li>요청 도메인과 쿠키에 설정된 도메인이 같은 경우만 쿠키 전송</li>
+    </ul>
+</ul>
