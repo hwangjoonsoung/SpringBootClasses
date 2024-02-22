@@ -437,3 +437,138 @@ https://www.google.com:443/search?q=hello&hl=ko
         <li>/new,/delete,/edit</li>
     </ul>
 </ul>
+
+## HTTP 상태코드
+### 상태코드
+<ul>
+    <li>1xx(Informational) : 요청이 수신되어 처리중</li>
+    <li>2xx(Successful) : 요청 정상 처리</li>
+    <li>3xx(Redirection) : 요청을 완료하려면 추가적인 행동이 필요함</li>
+    <li>4xx(Client Error) : 클라이언트 오류, 잘못된 방법으로 서버가 요청을 처리할 수 없음</li>
+    <li>5xx(Server Error) : 서버 오류, 서버가 정상적으로 요청을 처리 하시 못함</li>
+</ul>
+
+#### 2xx - success
+<ul>
+    <li>200 OK</li>
+        <ul>
+            <li><img src="img/200_ok.png"></li>
+        </ul>
+    <li>201 Created</li>
+        <ul>
+            <li><img src="img/201_Created.png"></li>
+        </ul>
+    <li>202 Accepted</li>
+        <ul>
+            <li>요청이 접수되었으나 처리가 완료되지 않았음.</li>
+            <li>배치 처리 같은 곳에소 사용.</li>
+            <li>에) 요청 접수 후 1시간 뒤에 배치 프로세스가 요청을 처리함.</li>
+        </ul>
+    <li>204 No Content</li>
+        <ul>
+            <li>서버가 성공적으로 동작했지만 응답 페이로드 본문에 보낼 데이터가 없음.</li>
+            <li>save 버튼의 결과로 아무 내용도 없어도 될때.</li>
+            <li>save 버튼을 눌러도 같은 화면을 유지해야 한다.</li>
+        </ul>
+</ul>
+
+#### 3xx - redirection
+300번 응답에 location이 있으면 자동으로 redirect 된다
+<li><img src="img/301_Redirection.png"></li>
+<ul>
+    <li>영구 리다이렉션: 특정 리소스의 URI가 영구적으로 이동 -> 301, 308</li>
+    <li>일시 리다이렉션: 일시적인 변경 -> 302, 307, 303</li>
+    <li>특수 리다이렉션: 결과 대신 캐시를 사용</li>
+</ul>
+<ul>
+    <li>300 Multiple Choices</li>
+    <li>301 Moved Permanently</li>
+    <ul>
+        <li><img src="img/302_PRG_Parrent.png "></li>
+        <li>본문이 제거 될 수 있음 == 뒤로가기를 하면 redirect되기 때문에 get을 계속해서 불러옴</li>    
+    </ul>    
+    <li>302 Found</li>
+    <ul>
+        <li>리다이렉트시 요청 메서드가 GET으로 변하고, 본문이 제거될 수 있음</li>
+    </ul>
+    <li>303 See Other</li>
+    <ul>
+        <li>302와 기능은 같음</li>
+        <li>리다이렉트시 요청 메서드와 본문유지(요청 메서드는 절대 변경하면 안된다.)</li>
+    </ul>
+    <li>304 Not Modified</li>
+    <ul>
+        <li>캐시를 목적으로 사용</li>
+        <li>클라이언트에게 리소스가 수정되지 않았음을 알려준다.따라서 클라이언트는 로컬 PC에 저장된 캐시를 재사용한다.</li>
+        <li>304 응답은 응답에 메시지 바디를 포함하면 안된다.(로컬 캐시 하용하니까)</li>
+        <li>조건부 GET,HEAD 요청시 사용</li>
+    </ul>
+    <li>307 Temporary Redirect</li>
+    <ul>
+        <li>302와 기능은 같음</li>
+        <li>리다이렉트시 요청 메서드가 GET으로 변경</li>
+    </ul>
+    <li>308 Permanent Redirect</li>
+    <ul>
+        <li><img src="img/308_.png "></li>
+        <li>본문이 제거되지 않음 == 새로고침을 하면 같은 본문이 중복적으로 날라감</li>
+    </ul>       
+</ul>
+
+##### PRG pattern
+<img src="img/PRG_Pattern.png">
+<ul>
+    <li>POST로 주문후에 새로 고침으로 인한 중복 주문 방지</li>
+    <li>POST로 주문후에 주문 결과를 GET으로 메서드로 리다이렉트</li>
+    <li>새로고침해도 결과 화면을 GET으로 조회</li>
+    <li>중복 주문 대신에 결과 화면만 GET으로 다시 요청</li>
+</ul>
+
+### 4xx - 클라이언트 오류, 5xx - 서버 오류
+#### 4xx
+<ul>
+    <li>클라이언트의 요청에 잘못된 문법등으로 서버가 요청을 수행할 수 없음</li>
+    <li>오류의 원인이 클라이언트에 있음</li>
+    <li>클라이언트가 이미 잘못된 요청, 데이터를 보내고 있기 때문에, 똑같은 재시도가 실패함</li>
+</ul>
+<ul>
+    <li>400 Bad Request</li>
+    <ul>
+        <li>요청구문, 메시지 등등 오류</li>
+        <li>클라이언트는 요청을 내용을 다시 검토하고 보낸다</li>
+    </ul>
+    <li>401 Unauthorized</li>
+    <ul>
+        <li>인증되지 않음</li>
+        <li>401 오류 발생시 응답에 WWW-Authenticate 헤더와 함께 인증 방법을 설명</li>
+    </ul>
+    <li>403 Forbidden</li>
+    <ul>
+        <li>서버가 요청을 이해했지만 승인 거부</li>
+        <li>주로 인증은 되지만 인가가 안될때 사용</li>
+    </ul>
+    <li>404 Not Found</li>
+    <ul>
+        <li>요청 리소스를 찾을 수 없음</li>
+        <li>클라이언트가 권한이 부족한 리소스에 접근했을때 403 대신 사용</li>
+    </ul>
+</ul>
+
+#### 5xx
+<ul>
+    <li>서버 문제로 오류 발생</li>
+    <li>재시도 하면 성공할 수 있음</li>
+</ul>
+<ul>
+    <li>500 Internal Server Error</li>
+    <ul>
+        <li>서버 문제로 오류 발생</li>
+    </ul>    
+    <li>503 Service Unavailable</li>
+    <ul>
+        <li>서비스 이용 불가</li>
+        <li>서버가 일시적인 과부하 및 예정된 작업으로 잠시 요청을 처리할 수 없음</li>
+    </ul>
+</ul>
+
+
