@@ -407,7 +407,7 @@ https://www.google.com:443/search?q=hello&hl=ko
     <li>location을 통해 새로 등록된 URI를 확인할 수 있다.<br><img src="img/POST_procedure_3.png"></li>
     <li>컬렉션</li>
     <ul>
-        <li>서버가 관리하는 리소스  디렉토리</li>
+        <li>서버가 관리하는 리소스 디렉토리</li>
         <li>서버가 리소스의 URI를 생성하고 관리</li>
         <li>컬렉션은 /members가 된단</li>
     </ul>
@@ -423,8 +423,17 @@ https://www.google.com:443/search?q=hello&hl=ko
     <li>클라이언트가 직접 리소스의 URI를 지정한다.</li>
     <li>스토어</li>
     <ul>
-        <li>클라이언트가 과니하는 리소스 저장소</li>
+        <li>클라이언트가 관리하는 리소스 저장소</li>
         <li>클라이언트가 리소스의 URI를 알고 관리</li>
         <li>스토어는 /files가 된다</li>
+    </ul>
+</ul>
+
+#### HTML FORM 사용
+<ul>
+    <li>HTML FORM은 GET과 POST만 사용할 수 있다.</li>
+    <li>따라서 DELETE를 할때에는 controll URI를 사용해야 한다.</li>
+    <ul>
+        <li>/new,/delete,/edit</li>
     </ul>
 </ul>
