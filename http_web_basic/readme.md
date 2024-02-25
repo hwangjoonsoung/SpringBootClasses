@@ -818,3 +818,161 @@ https://www.google.com:443/search?q=hello&hl=ko
         <li>요청 도메인과 쿠키에 설정된 도메인이 같은 경우만 쿠키 전송</li>
     </ul>
 </ul>
+
+## HTTP 헤더2 - 캐시와 조건부 요청
+### 캐시 기본 동작
+#### 캐시가 없는 경우
+<ul>   
+    <li>데이터가 변경 되지 않아도 계속 네트워크를 통해서 데이터를 다운로드 받아야 한다.</li>
+    <li>인터넷 네트워크는 매우 느리고 비싸다.</li>
+    <li>브라우저 로딩 속도가 느리다</li>
+    <li>느린 사용자 경험</li>
+</ul>
+
+#### 캐시가 있는 경우
+<ol>
+    <li>요청에 대한 응답을 할때 캐시의 유효시간을 지정한다.</li>
+    <li>두번째 요청에서 요청을 보내기 전에 브라우저 캐시를 뒤져서 유효한 캐시가 있는지 확인한다.</li>
+    <li>유효한 캐시가 있으면 해당 캐시를 통해 데이터를 사용하고 그렇지 않으면 네트워크를 통해 다시 응답 받는다.</li>
+</ol>
+<ul>
+    <li>네트워크를 사용하지 않아도 된다.</li>
+    <li>네트워크 사용량을 줄일 수 있다.</li>
+    <li>브라우저 로딩 속도가 빨**![img.png](img.png)**라진다.</li>
+    <li>빠른 사용자 경험</li>
+</ul>
+
+#### 캐시 시간 초과
+<ul>
+    <li>캐시 유효 시간이 초과하면 서버를 통해 데이터를 다시 조회하고, 캐시를 갱신한다.</li>
+    <li>데이터가 만약 같다면 같은 데이터를 내려주기 보다는 유효시간만 다시 셋팅해 주는것으로 재사용이 가능 하도록 만들어 주는 방법을 선택한다.</li>
+</ul>
+
+### 검증 헤더와 조건부 요청1
+#### 케시 시간 초과
+<img src="img/Last-Modified.png">
+<ol>
+    핵심은 Last_modified를 사용해서 해당 데이터의 변겸점이 있는지 확인할수 있도록 한다.
+    <li>첫번째 요청에 응답을 할때 헤더에 캐시의 유효시간과 데이터의 마지막 변경을 넣어 응답한다.</li>
+    <li>두번째 요청에서 해당 캐시가 유효한지 확인하다.</li>
+    <li>이때 캐시에 last-modified가 있는경우 요청 헤더에 last-modified를 붙여서 보낸다.</li>
+    <li>서버에서 응답을 할때 last-modified를 확인해서 변경된 것이 없으면 304 Not Modified를 보내는 것으로 유효시간만 갱신해 준다.</li>
+</ol>
+
+#### 검증 헤더 추가
+<ul>
+    <li>캐시 유효 시간이 초과해도, 서버의 데이터가 갱신도지 않으면</li>
+    <li>304 Not Modified + 헤더 메타 정보만 응답(바디는 없다)</li>
+    <li>클라이언트는 서버가 보낸 응답 헤더 정보로 캐시의 메타 정보를 갱신</li>
+    <li>클라이언트는 캐시에 저장되어 있는 데이터를 재활용</li>
+    <li>결과적으로 네티워크 다운로드는 발생하지만 용량이 적다.</li>
+    <li>굉장히 실용적인 해결책</li>
+</ul>
+
+### 검증 헤더와 조건부 요청2
+<ul>
+    <li>검증 헤더</li>
+    <ul>
+        <li>캐시 데이터와 서버 데이터가 같은지 검증하는 데이터</li>
+        <li>Last-Modified , ETag</li>
+    </ul>
+    <li>조건부 요청 헤더</li>
+    <ul>
+        <li>검증 헤더로 조건에 따른 분기</li>
+        <li>If-Modified-Since: Last-Modified 사용</li>
+        <li>If-None-Match: ETag 사용</li>
+        <li>조건이 만족하면 200 ok</li>
+        <li>조건이 만족하지 않으면 304 Not-Modified</li>
+    </ul>
+</ul>
+
+#### Last Modified 
+<ol>
+    if-Modified-Since: 이후에 데이터가 수정되었으면?
+    <li>
+        수정 된 경우
+    </li>
+    <ul>
+        <li>if-Modified-Since가 false이기 때문에 304 Not Modieifed를 보낸다</li>
+    </ul>
+    <li>수정이 안된 경우</li>
+    <ul>
+        <li>if-Modified-Since가 true이기때문에 200 OK를 보낸다</li>
+    </ul>
+</ol>
+
+#### 단점
+<ul>
+    <li>날짜 기반의 로직 사용</li>
+    <li>1초 미만 단위로 캐시 조정이 불가능</li>
+    <li>날짜 기반의 로직 사용</li>
+    <li>데이터를 수정해서 날짜가 다르지만 같은 데이터를 수정해서 데이터 결과가 똑같은 경우</li>
+    <li>서버에서 별도의 캐시 로직을 관리하고 싶은 경우</li>
+</ul>
+
+#### 주석이나 공백에 변경점이 생겨도 캐시를 유지하도록 하는 경우 (ETag : entity tag)
+<ul>
+    <li>캐시용 데이터에 임의의 고유한 버전 이름을 달아둠</li>
+    <li>데이터가 변경되면 이 이름을 바꾸어서 변경함 (Hash를 다시 생성)</li>
+    <li>단순하게 ETag만 보내서 같으면 유지, 다르면 다시 받기</li>
+</ul>
+
+##### 작동 방식
+<ol>
+    <li>첫번째 요청에 응답을 보낼때 ETag를 헤더에 넣어서 응답함</li>
+    <li>해당 응답을 브라우즈 캐시에 저장하고 두번째 요청을 함</li>
+    <li>두번째 요청에서 캐시가 만료된 경우 해당 캐시의 ETag를 요청 헤더에 넣어서 보냄(if-None-Match라는 헤더 사용)</li>
+    <li>서버에서 ETag가 일치하는 지 확인함</li>
+    <ul>
+        <li>일치하면 if-None-Match가 false임으로 304 Not Modified를 보내는 것으로 유효시간 갱신</li>
+        <li>일치하지 않으면 if-None-Match가 true임으로 200 Ok를 보내는 것으로 새로운 캐시 응답</li>
+    </ul>
+</ol>
+
+##### 정리
+<ul>
+    <li>단순하게 ETag만 서버에 보내서 같으면 유지, 다르면 다시 받기</li>
+    <li>캐시 제어 로직은 서버에서 완전히 관리</li>
+    <li>클라이언트는 단순히 이 값을 서버에 제공한다.</li>
+</ul>
+
+### 캐시와 조건부 요청 헤더
+#### 케시 제어 헤더
+<ul>
+    <li>Cache-Control: 캐시 제어</li>
+    <ul>
+        <li>max-age -> 유효기간, 초단위</li>
+        <li>no-cache -> 데이터는 캐시해도 되지만, 항상 원(origin) 서버에 검증하고 사용</li>
+        <li>no-store -> 데이터에 민감한 정보가 있음으로 저장하면 안됨</li>
+        <li>must-revalidate -> 캐시 만료후 최초 조회시 원서버에 검증해야 함</li>
+    </ul>
+    <li>Pragma: 캐시 제어(하위 호환)</li>
+    <ul>
+        <li>no-cache : 1.0 하위호환</li>
+    </ul>
+    <li>Expires: 캐시 유효 기간(하위 호환)</li>
+    <ul>
+        <li>캐시 만료일을 날짜로 지정</li>
+    </ul>
+    <ul>검증 헤더</ul>
+    <ul>
+        <li>ETag : 캐시에 고유한 이름 부여함으로 검증</li>
+        <li>last-modified : 캐시가 변경된 시점으로 검증</li>
+    </ul>
+</ul>
+
+### 캐시 무효화 
+<b>확실한 캐시 뮤효화 응답 : Cache-Control:no-cache,no-store,must-revalidate</b>
+
+#### no-cache VS must-revalidate
+##### no-cahce의 기본동작
+<img src="img/no-cache.png">
+
+##### 프록시 캐시 설정에 따른 no-cache동작
+<img src="img/no-cache2.png">
+<div>프록시 캐시와 원 서버의 네트워크가 순간적으로 단절된경우 프록시 캐시가 응답을 하는 설정이 있다.<br>때문에 200 OK을 응답하는 경우가 있다.</div>
+
+##### must-revalidate를 사용하게 되면?
+<img src="img/must-revalidate.png">
+<div>프록시 캐시와 원서버의 네트워크가 단절된 경우 must-revalidate를 사용하게 되면 504 Gateway TimeOut을 응답한다.</div>
+
