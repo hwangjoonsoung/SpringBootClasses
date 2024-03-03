@@ -104,6 +104,9 @@
   - 따라서 확장할 가능성이 없으면, 바로 구현클레스를 사용하는것이 좋다.
 
 ### 스프링 핵심 원리 이해1 - 예제 만들기
+
+#### 회원 서비스
+<img src="img/memberServiceDiagram.png">
     public class MemberServiceImpl implements MemberService{
     
         private final MemberRepository memberRepository = new MemoryMemberRepository();
@@ -120,3 +123,5 @@
     }
 - 위 코드에서 문제는 MemberServiceImpl는 MemberRepository와 MemorymemberRepository에 의존한다는 것
 - 즉 추상화(interface)에도 의존하고 구체화(class)에도 의존 한다는 것이 문제다.(DIP위반)
+#### 주문 서비스
+<img src="img/orderServiceDiagram.png">
