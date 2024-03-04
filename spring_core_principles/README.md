@@ -103,25 +103,75 @@
   - 추상화 라는 비용이 생긴다. 코드를 찾아볼때 구현 클래스에 접근하기 위해 interface->class 순으로 접근할 수 밖에 없다.
   - 따라서 확장할 가능성이 없으면, 바로 구현클레스를 사용하는것이 좋다.
 
-### 스프링 핵심 원리 이해1 - 예제 만들기
+### 스프링 핵심 원리 이해 1 - 예제 만들기
 
 #### 회원 서비스
 <img src="img/memberServiceDiagram.png">
-    public class MemberServiceImpl implements MemberService{
-    
-        private final MemberRepository memberRepository = new MemoryMemberRepository();
-    
-        @Override
-        public void join(Member member) {
-            memberRepository.save(member);
-        }
-    
-        @Override
-        public Member findById(Long id) {
-            return memberRepository.findById(id);
-        }
-    }
+<pre>
+public class MemberServiceImpl implements MemberService{
+  private final MemberRepository memberRepository = new MemoryMemberRepository(); 
+
+  @Override
+  public void join(Member member) {
+    memberRepository.save(member);
+  }
+
+  @Override
+  public Member findById(Long id) {
+    return memberRepository.findById(id);
+  }
+
+}
+</pre>
 - 위 코드에서 문제는 MemberServiceImpl는 MemberRepository와 MemorymemberRepository에 의존한다는 것
 - 즉 추상화(interface)에도 의존하고 구체화(class)에도 의존 한다는 것이 문제다.(DIP위반)
 #### 주문 서비스
 <img src="img/orderServiceDiagram.png">
+
+### 스프링 핵심 원리 이해 2 - 객체 지향 원리 적용
+
+- OrderServiceImpl에서 인스턴스를 변경해 주는것으로 할인 정책을 변경할 수 있다.
+ 
+<pre>
+//private final DiscountPolicy discountPolicy = new FixdiscountPolicy();
+private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
+</pre>
+
+- 회원서비스와 동일하게 문제가 발생한다.
+  - 역활과 구현을 분리했나? -> ok
+  - 다형성을 활용하고 인터페이스와 구현 객체를 분리했나? -> ok
+  - OOP 원칙을 충실하게 준수 했나? -> no
+    - DIP 위반 : 클래스 의존 관계를 분석해 보면, 추상 클래스(interface) 뿐만 아니라 구현 클래스(class)에도 의존하고 있다. -> OrderServiceImpl 에서 interface와 class에 접근했다.
+    - <img src="img/DIP_violation.png">
+    - OCP 위반 : 클라이언트 변경 없이 확장 할 수 있어야 한다. -> 하지만 우리는 클라이언트에서 인스턴스를 변경하는 과정을 거쳤다
+    - <img src="img/OCP_violation.png">
+  
+- 해결 방법은?
+<pre>private DiscountPolicy discountPolicy;</pre>
+  - 위와 같은 방법을 사용하면 구현체에는 의존하지 않지만 NPE가 발생한다.
+  - 즉 제 3자가 와서 discountPolicy에 구현체를 넣어줘야 한다.
+
+#### 관심사의 분리
+- DIP를 지키기 위해서는 제 3자가 와서 discountPolicy에 구현체를 넣어줘야 한다.
+- 그 역활을 AppConfig가 한다.
+  - 구현체 (OrderServiceImpl)
+  <pre>
+  private final MemberRepository memberRepository;
+  private final DiscountPolicy discountPolicy; 
+  
+  public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) { 
+    this.memberRepository = memberRepository; 
+    this.discountPolicy = discountPolicy;
+  }
+  </pre>
+  - AppConfig (제 3자)
+  <pre>
+  public OrderService orderService() {
+      return new OrderServiceImpl(new MemoryMemberRepository(), new FixdiscountPolicy()); 
+  }
+  </pre>
+- OrderServiceImpl는 더이상 구현체에 의존하지 않는다.
+- 그저 추상 클래스만 의존하고 있을 뿐이다.
+- OrderServiceImpl 입장에서 보면 어떤 구현체가 들어올지는 모른다.
+- 어떤 구현체가 들어갈지는 Appconfig (제 3자)에 의해서 들어간다.
+- 즉, OrderServiceImpl는 의존 관계(역활)에 대한 고민은 두고 실행하는 것에 집중할 수 있다. 
