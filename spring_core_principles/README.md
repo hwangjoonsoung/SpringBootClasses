@@ -173,5 +173,80 @@ private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
 - OrderServiceImpl는 더이상 구현체에 의존하지 않는다.
 - 그저 추상 클래스만 의존하고 있을 뿐이다.
 - OrderServiceImpl 입장에서 보면 어떤 구현체가 들어올지는 모른다.
-- 어떤 구현체가 들어갈지는 Appconfig (제 3자)에 의해서 들어간다.
+- 어떤 구현체가 들어갈지는 AppConfig (제 3자)에 의해서 들어간다.
 - 즉, OrderServiceImpl는 의존 관계(역활)에 대한 고민은 두고 실행하는 것에 집중할 수 있다. 
+#### AppConfig 리팩터링
+<pre>
+public class AppConfig {
+
+    public MemberService memberService() {
+        return new MemberServiceImpl(getMemoryMemberRepository());
+    }
+
+    private MemberRepository getMemoryMemberRepository() {
+        return new MemoryMemberRepository();
+    }
+
+    public OrderService orderService() {
+        return new OrderServiceImpl(getMemoryMemberRepository(), discountPolicy());
+    }
+
+    private DiscountPolicy discountPolicy() {
+        return new FixdiscountPolicy();
+    }
+
+}
+</pre>
+- 이렇게 변경을 하면 추상클래스가 어떤 구현 클래스를 사용하는지 한눈에 알아 볼 수 있다.
+- MemberRepository의 구현체로 MemoryMemberRepository를 사용하며
+- DiscountPolicy의 구현체로 FixedDiscountPolicy를 사용한다.
+- 만약 할인 정책이 변경된다 하면 discountPolicy() 함수의 return 부분만 변경해 주면 된다.
+  - return new FixedDiscountPolicy(); -> return new RateDiscountPolicy();
+#### 프레임워크 vs 라이브러리
+- 내가 작성한 코드의 제어권이 나에게 없는 경우 : 프레임워크
+  - JUnit의 경우
+  - @Test 애노테이션을 사용하여 test code를 작성한다.
+  - 이때 우리는 test의 라이프 사이클을 위한 어떤 객체를 생성하여 사용하지 않는다.
+  - JUnit이 알아서 @BeforeEach와 같은 애노테이선을 통해서 알아서 동작한다.
+  - 이것이 프레임워크의 하나의 예라고 할 수 있다.
+- 내가 작성한 코드의 제어권이 나에게 있는 경우 : 라이브러리
+  - PageNation의 경우
+  - 내가 PageNation을 사용한다 하면 build.gradle에 dependency를 추가하고,
+  - 인스턴스를 생성해서 상세한 설정을 진행한다.
+  - 이것이 라이브러리다.
+- 즉, 제공하는 것이 하나의 틀을 제공하냐, 하나의 방법을 제공하냐 에서 차이가 있다.
+#### 의존관계 주입 : 정적인 클래스의 의존관계 vs 동적인 클래스의 의존관계
+- 정적인 클래스의 의존관계
+  - 코드로 바로 확인 할 수 있다
+  - ex) Member member = new Member();
+  - implement DiscountPolicy;
+- 동적인 클래스의 의존 관계
+  - 실핼을 시켰을때 의존 관계를 확인 할 수 있는 경우
+#### Spring을 이용한 DI
+- 스프링을 이용해서 DI를 하기 위해서는 스프링이 제공하는 애노테이션을 이용해야 한다.
+- IoC container에 Bena을 등록하기 위해서는 AppConfig class에 @Configuration을 부여하고
+- Bean을 등록하는 객체는 @Bean을 부여하면 된다.
+<pre>
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public MemberService memberService() {
+        return new MemberServiceImpl(getMemoryMemberRepository());
+    }
+
+    @Bean
+    public MemberRepository getMemoryMemberRepository() {
+        return new MemoryMemberRepository();
+    }
+}
+</pre>
+- main에서 IoC 컨테이너에 있는 Bean을 사용할 때에는 ApplicaationContext.class를 이용한다.
+<pre>
+    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+    MemberService memberService = applicationContext.getBean("memberService", MemberService.class);
+    OrderService orderService = applicationContext.getBean("orderService", OrderService.class);
+</pre>
+- 위와 같은 방법을 사용하면 IoC를 이용한 DI를 진행할 수 있다.
+- 문제는 이전에 사용했던 AppConfig.class를 main에서 객체로 생성하여 사용하는 방법이 더욱더 쉬운 방법이라는 것이다.
+
