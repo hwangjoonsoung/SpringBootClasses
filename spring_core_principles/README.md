@@ -250,3 +250,18 @@ public class AppConfig {
 - 위와 같은 방법을 사용하면 IoC를 이용한 DI를 진행할 수 있다.
 - 문제는 이전에 사용했던 AppConfig.class를 main에서 객체로 생성하여 사용하는 방법이 더욱더 쉬운 방법이라는 것이다.
 
+### 스프링 컨테이너와 스프링 빈
+#### 스프링 컨테이너 생성과정
+1. 스프링 컨테이너 생성 
+   1. ApplicationContext를 스프링 컨테이너라고 할 수 있는데 이 추상클래스를 호출하는 것으로 스프링 컨테이너가 생성된다.
+   2. 이때 구현체의 생성자의 파라미터로 해당 bean을 생성할 클래스를 인자로 넣어주면 해당 클래스의 bean을 생성할 수 있다.
+2. Bean 생성
+   1. Bean의 default name은 method name으로 지정되며 @bean(name="[name]")으로 Bean name을 지정할 수 있다.
+3. 의존관계 설정
+   1. 설정 정보를 참고해서 의존관계를 설정한다.(※자바코드를 호출하는 것 같지만 차이가 있음)
+   2. Bean이 생성되면 자동적으로 의존관계가 설정이 된다.
+      1. 만약 자바 코드로 스프링 빈을 등록하는 경우 의존 관계의 설정은 생성자를 호출하면서 의존관계도 설정이 된다.
+
+<img src="img/createContainer.png">
+<img src="img/addBean.png">
+<img src="img/settingDependency.png">
