@@ -265,3 +265,13 @@ public class AppConfig {
 <img src="img/createContainer.png">
 <img src="img/addBean.png">
 <img src="img/settingDependency.png">
+
+### Exception Test
+<pre>
+    @Test
+    @DisplayName("해당하는 이름으로 조회했는데 없는 경우")
+    void findBeanByNameNotFound() {
+        assertThrows(NoSuchBeanDefinitionException.class,
+                () -> ac.getBean("memberservice", MemberService.class));
+    }
+</pre>
