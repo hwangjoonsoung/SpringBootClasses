@@ -180,15 +180,15 @@ private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
 public class AppConfig {
 
     public MemberService memberService() {
-        return new MemberServiceImpl(getMemoryMemberRepository());
+        return new MemberServiceImpl(memberRepository());
     }
 
-    private MemberRepository getMemoryMemberRepository() {
+    private MemberRepository memoryMemberRepository() {
         return new MemoryMemberRepository();
     }
 
     public OrderService orderService() {
-        return new OrderServiceImpl(getMemoryMemberRepository(), discountPolicy());
+        return new OrderServiceImpl(memoryMemberRepository(), discountPolicy());
     }
 
     private DiscountPolicy discountPolicy() {
@@ -232,11 +232,11 @@ public class AppConfig {
 
     @Bean
     public MemberService memberService() {
-        return new MemberServiceImpl(getMemoryMemberRepository());
+        return new MemberServiceImpl(memoryMemberRepository());
     }
 
     @Bean
-    public MemberRepository getMemoryMemberRepository() {
+    public MemberRepository memoryMemberRepository() {
         return new MemoryMemberRepository();
     }
 }
@@ -250,8 +250,8 @@ public class AppConfig {
 - 위와 같은 방법을 사용하면 IoC를 이용한 DI를 진행할 수 있다.
 - 문제는 이전에 사용했던 AppConfig.class를 main에서 객체로 생성하여 사용하는 방법이 더욱더 쉬운 방법이라는 것이다.
 
-### 스프링 컨테이너와 스프링 빈
-#### 스프링 컨테이너 생성과정
+#### 스프링 컨테이너와 스프링 빈
+##### 스프링 컨테이너 생성과정
 1. 스프링 컨테이너 생성 
    1. ApplicationContext를 스프링 컨테이너라고 할 수 있는데 이 추상클래스를 호출하는 것으로 스프링 컨테이너가 생성된다.
    2. 이때 구현체의 생성자의 파라미터로 해당 bean을 생성할 클래스를 인자로 넣어주면 해당 클래스의 bean을 생성할 수 있다.
@@ -266,7 +266,7 @@ public class AppConfig {
 <img src="img/addBean.png">
 <img src="img/settingDependency.png">
 
-### Exception Test
+#### Exception Test
 <pre>
     @Test
     @DisplayName("해당하는 이름으로 조회했는데 없는 경우")
@@ -275,3 +275,69 @@ public class AppConfig {
                 () -> ac.getBean("memberservice", MemberService.class));
     }
 </pre>
+
+### 싱글톤 컨테이너
+#### 기존 코드의 문제점은 뭐가 있을까?
+- 하나의 주문이 들어오면 파생되는 많은 객체가 만들어짐 == TPS가 높으면 그만큼 객체의 수가 많아짐
+  - 이걸 해결하기 위해서는 하나의 객체를 생성하고 그것을 공유하는 것이 유리하다.
+  - 이때 사용하는 것이 싱글톤 패턴이다.
+<pre>
+    private static final SingletonService getInstance = new SingletonService();
+
+     public static SingletonService getInstance(){
+         return getInstance;
+     }
+
+     private SingletonService() {
+     }
+</pre>
+- 위 코드와 같이 생성자를 부를 수 없도록 접근제어를 private로 막으면 singletonService의 생성자를 부를 수 있는 방법은
+- getInstance를 호출하는 메서드를 사용하는 방법 뿐이다.
+
+#### 싱글톤의 문제점
+- 각 클래스마다 기본적으로 들어가는 코드가 있음...
+- 의존관계상 보면 추상체에 의존하지 않는다.
+- 유연한 테스트 불가능
+- 자식클래스를 만들기 어렵다.
+- 내부 속성을 변경하거나 초기화 하기 어렵다.
+- 결론적으로 유연성이 떨어진다.
+
+#### 싱글톤 컨테이너
+<img src="img/addBean.png">
+
+- 위 그림에서 보면 스크링 컨테이너에 빈을 추가하고 빈을 사용할 때에는 해당 객체를 사용한다.
+- 즉, 싱글톤 처럼 한번 생성한 인스턴스를 계속해서 사용하는 것과 같은 의미를 지닌다.
+- 따라서, 스프링 컨테이너는 싱글톤 컨테이너 역할을 지니고 있다.
+
+#### 싱글톤 방식의 주의점
+- 무상태로 설계해야 한다
+  - 특정 클라이언트에 의존적인 필드가 있으면 안된다
+  - 특정 클라이언트가 값을 변경할 수 있는 필드가 있으면 안된다.
+  - 가급적 읽기만 해야한다.
+  - 필드를 사용하기 보다는 공유되지 않는, 지역변수, 파라미터, ThreadLocal을 사용해야 한다.
+- 스프링 빈의 필드에 공유값을 설정하면 큰 장애가 발생 할 수 있다.
+##### 뭐가 문제일까?
+- StatefulService.class에서 보면 필드 변수가 선언되어 있다.
+- 클라이언트에서 사용할때 싱글톤이면 인스턴스가 하나임으로 필드 변수가 모든 클라이언트에서 공유가 된다.
+- 이때 Thread A와 Thread B에 해당 필드 변수를 초기화 하는 코드가 있으면 문제가 발생할 수 있다.
+- 따라서 stateless하게 구현해야 한다.
+##### 어떻게 stateless하게 구현할까?
+- 필드 변수를 삭제하면 된다.
+<pre>
+    public int order(String name , int price){
+        System.out.println("name = " + name + " price = " + price );
+        return price;
+    }
+</pre>
+##### @Configuration과 싱글톤
+- ConfigurationSingletonTest.class 에서 configurationTest()를 보면 AppConfig.class의 memberRepository.class를 3번 호출한다.
+- 근데 java code를 보면 new Repository를 3번 하기 때문에 싱글톤으로 작동이 되면 안된다.
+- configurationTest()를 보면 new Repository는 같은 인스턴스인것을 확인 할 수 있다.
+- 즉, @Configuration 애노테이션이 하나의 인스턴스를 호출하도록 해준다는 의미를 지닌다.
+##### @Configuration은 어떻게 싱글톤을 보장하나?
+<img src="img/CGLIB.png">
+
+- @Configuration이 있는 class를 보면 CGLIB이라는 단어가 보인다.
+- 즉, @Configuration이 바이트 코드를 조작해 싱글톤을 보장해 주는 것이다. 이때 바이트코드를 조작하는 라이브러리가 CGLIB이다.
+- 따라서 @Configuration이 없어진다면 바이트 코드를 조작하지 못함으로 순수 java code로 인스턴스를 부여하게 된다.
+- 즉, 싱글톤이 보장되지 않기 때문에 새로운 인스턴스를 생성해서 적용한다.

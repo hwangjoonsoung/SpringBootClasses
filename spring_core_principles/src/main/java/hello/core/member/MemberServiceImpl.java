@@ -17,4 +17,8 @@ public class MemberServiceImpl implements MemberService{
     public Member findById(Long id) {
         return memberRepository.findById(id);
     }
+
+    public MemberRepository getMemberRepository() {
+        return memberRepository;
+    }
 }

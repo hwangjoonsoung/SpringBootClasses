@@ -6,6 +6,7 @@ import hello.core.member.MemberServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class ApplicationContextBasicFindTest {
@@ -30,8 +31,7 @@ public class ApplicationContextBasicFindTest {
     @Test
     @DisplayName("구현체 이름으로 조회 했는데 없는 경우")
     void findBeanByName2() {
-        MemberService memberService = ac.getBean("xxxxxx", MemberServiceImpl.class);
-        Assertions.assertThat(memberService).isInstanceOf(MemberServiceImpl.class);
+        org.junit.jupiter.api.Assertions.assertThrows(NoSuchBeanDefinitionException.class, () -> ac.getBean("xxxxxx", MemberServiceImpl.class));
     }
 
 }
