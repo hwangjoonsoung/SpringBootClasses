@@ -341,3 +341,52 @@ public class AppConfig {
 - 즉, @Configuration이 바이트 코드를 조작해 싱글톤을 보장해 주는 것이다. 이때 바이트코드를 조작하는 라이브러리가 CGLIB이다.
 - 따라서 @Configuration이 없어진다면 바이트 코드를 조작하지 못함으로 순수 java code로 인스턴스를 부여하게 된다.
 - 즉, 싱글톤이 보장되지 않기 때문에 새로운 인스턴스를 생성해서 적용한다.
+
+### 컴포넌트 스캔
+- 기존 과정을 보면 @Bean으로 계속 bean으로 등록해 주고 의존 관계도 수동으로 이어 줘야 했다.
+- 만약 class가 많아지면 그만큼 많은 시간이 소요 될 것이다.
+- 이제는 @Component와 @Autowired로 DI를 편하게 할 수 있다.
+#### 빈 등록과 DI
+- Bean으로 등록하기 위해서는 @Component를 사용하면 빈으로 등록할 수 있다.
+- DI를 하기 위해서는 @AutoWired를 사용해서 의존 관계를 설정할 수 있다.
+<pre>
+@Component("memberService")
+public class OrderServiceImpl implements OrderService{
+
+    @Autowired
+    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+        this.memberRepository = memberRepository;
+        this.discountPolicy = discountPolicy;
+    }
+}
+</pre>
+#### ComponentScan의 동작방법
+1. @ComponentScan이 @Component가 붙은 class를 모두 bean으로 등록한다
+   1. 이때 Bean name은 class의 이름을 사용하되 가장 앞자리는 소문자로 사용된다
+   2. 만약 Bean name을 지정하고 싶은 경우 @Component("[name]")으로 지정해 줄 수 있다.
+2. @Autowired를 만나면 해당하는 Bean을 찾아서 DI를 해준다
+<img src="img/ComponentScan.png">
+<img src="img/Autowired.png">
+#### ComponentScan
+- Scan의 시작 위치를 적용할수 있다
+  - @Componentscan(basePackages = "hello.core.member")
+  - @Componentscan(basePackagesClass = "hello.core.member.")
+- 관례적으로 프로젝트의 최상단에서 componentScan을 하는것으로 한다.
+  - SpringbootApplication에 보면 @ComponentScan이 있다.
+#### filter
+- includeFilters : 스캔 대상을 추가로 지정
+- excludeFilters : 스캔 대상에서 제외
+<pre>
+    @Configuration
+    @ComponentScan(
+            includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = MyIncludeComponent.class),
+            excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = MyExcludeComponent.class)
+    )
+    static class ComponentFilterAppConfig {
+
+    }
+</pre>
+#### 중복 등록과 충돌
+1. 자동 빈 등록 vs 자동 빈 등록 : @component([name])이 중복으로 선언되어 있는 경우 -> Exception 발생 
+2. 수동 빈 등록 vs 자동 빈 등록 : 수동 빈 등록이 우선권을 가진다.
+   1. 최근 스프링 부트는 수동으로 빈을 등록하는 경우 중복된 bean name이 있는 경우 시작이 안되도록 변경해 두었다.
