@@ -85,7 +85,7 @@
   - 이 원칙을 지키려면 객체를 생성하고, 관계를 맺어주는 별도의 조립, 설정자가 필요하다.
 - LSP (리스코프 치환 원칙)
   - 프로그램의 객체는 프로그램의 정확성을 깨뜨리지 않으면서 하위 타입의 인스턴스로 바꿀 수 있어야 한다.
-  - 다형성에서 하위 클래스르는 인터페이스 규약을 지켜야 한다. <br>인터페이스의 의도 대로 구현체가 구현되어야 한다.이는 단순히 컴파일 성공 여부를 넘어서는 것을 의미한다.
+  - 다형성에서 하위 클래스르는 인터페이스 규약을 지켜야 한다.    인터페이스의 의도 대로 구현체가 구현되어야 한다.이는 단순히 컴파일 성공 여부를 넘어서는 것을 의미한다.
 - ISP (인터페이스 분리 원칙)
   - 특정 클라이언트를 위한 인터페이스 여러 개가 범용 인터페이스 하나보다 낫다.
     - 자동차 인터페이스 = 운전 인터페이스 + 정비 인터페이스
@@ -349,7 +349,8 @@ public class AppConfig {
 #### 빈 등록과 DI
 - Bean으로 등록하기 위해서는 @Component를 사용하면 빈으로 등록할 수 있다.
 - DI를 하기 위해서는 @AutoWired를 사용해서 의존 관계를 설정할 수 있다.
-<pre>
+
+```java
 @Component("memberService")
 public class OrderServiceImpl implements OrderService{
 
@@ -359,7 +360,7 @@ public class OrderServiceImpl implements OrderService{
         this.discountPolicy = discountPolicy;
     }
 }
-</pre>
+```
 #### ComponentScan의 동작방법
 1. @ComponentScan이 @Component가 붙은 class를 모두 bean으로 등록한다
    1. 이때 Bean name은 class의 이름을 사용하되 가장 앞자리는 소문자로 사용된다
@@ -376,7 +377,7 @@ public class OrderServiceImpl implements OrderService{
 #### filter
 - includeFilters : 스캔 대상을 추가로 지정
 - excludeFilters : 스캔 대상에서 제외
-<pre>
+```java
     @Configuration
     @ComponentScan(
             includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = MyIncludeComponent.class),
@@ -385,8 +386,113 @@ public class OrderServiceImpl implements OrderService{
     static class ComponentFilterAppConfig {
 
     }
-</pre>
+```
 #### 중복 등록과 충돌
 1. 자동 빈 등록 vs 자동 빈 등록 : @component([name])이 중복으로 선언되어 있는 경우 -> Exception 발생 
 2. 수동 빈 등록 vs 자동 빈 등록 : 수동 빈 등록이 우선권을 가진다.
    1. 최근 스프링 부트는 수동으로 빈을 등록하는 경우 중복된 bean name이 있는 경우 시작이 안되도록 변경해 두었다.
+
+### 의존관계 자동 주입
+#### 의존관계 주입방법
+1. 생성자 주입
+```java
+    private final DiscountPolicy discountPolicy;
+    private final MemberRepository memberRepository;
+
+    @Autowired
+    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+        this.memberRepository = memberRepository;
+        this.discountPolicy = discountPolicy;
+    }
+```
+   - 생성자를 호출하는 시점에서 딱 1번만 호출되는 것이 보장된다.
+   - 불편, 필수 의존관계에 사용
+   - 생성자가 1개인 경우 자동으로 @Autowired가 된것으로 간주한다.
+2. setter 주입(수정자 주입)
+```java
+private DiscountPolicy discountPolicy;
+    private MemberRepository memberRepository;
+
+    @Autowired
+    public void setMemberRepository(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
+    @Autowired
+    public void setDiscountPolicy(DiscountPolicy discountPolicy) {
+      this.discountPolicy = discountPolicy;
+    }
+```
+        - 선택, 변경 가능성이 있는 의존관계에 사용
+   - 자바 빈 프로퍼티 규약의 수정자 메서드 방식을 사용하는 방법이다.
+3. 필드주입
+```java
+    @Autowired  
+    private DiscountPolicy discountPolicy;
+    @Autowired  
+    private MemberRepository memberRepository;
+```
+  - 권장하지는 않는다.
+  - DI 프레임워크가 없으면 아무것도 할 수 없다
+4. 일반 메서드 주입
+```java
+    private DiscountPolicy discountPolicy;
+    private MemberRepository memberRepository;
+
+    @Autowired
+    public void init(MemberRepository memberRepository, DiscountPolicy discountPolicy){
+        this.memberRepository = memberRepository;
+        this.discountPolicy = discountPolicy;
+    }
+```
+  - 한번에 여러 필드를 주입 받을 수 있다.
+  - 일반적으로 잘 사용하지는 않음
+
+<b>생성자 주입은 bean을 등록하면서 DI를 동시에 하지만 setter주입은 bean을 등록한 이후에 DI를 진행한다.</b>
+#### 옵션처리 - 주입할 bean이 없어도 동작하게 하는 방법
+- @Autowired(required = true) 인데 이걸 false로 변경하면 bean이 없어도 가능하다.
+``` java
+    @Test
+    void AutowiredOption(){
+        ApplicationContext ac = new AnnotationConfigApplicationContext(TestBean.class);
+
+    }
+
+    static class TestBean{
+
+        @Autowired(required = false)
+        public void setNoBean(Member member){
+            System.out.println("member = " + member);
+        }
+
+        @Autowired
+        public void setNoBean2(@Nullable Member member2){
+            System.out.println("member2 = " + member2);
+        }
+
+        @Autowired
+        public void setNoBean3(Optional<Member> member3){
+            System.out.println("member3 = " + member3);
+        }
+    }
+```
+- 위 코드를 통해 bean이 없어도 DI가 동작할 수 있도록 할 수 있다.
+- @Autowired(required = false)
+  - 해당 메서드는 실행 자체가 안된다.
+- @Nullable 
+  - 메서드는 실행이 되지만 null로 DI가 진행된다.
+- Optional
+  - 메서드는 실행이 되고 Optional.empty로 DI가 된다.
+#### 생성자 주입을 사용해야 하는 이유
+- 불변
+  - 대부분의 의존관계는 한번 일어나면 애플리케이션이 종료될때 까지 변경할 일이 없어야 한다.
+  - setter주입을 하게 되면 public을 사용해야 한다.이는 누군가 변경할 여지를 줄 수 있다.
+  - 생성자 주입은 한번만 실행되기 때문에 변경이 불가능 하다.
+- 누락
+  - setter주입을 하는 경우 runtimeError가 발생할 수 있다.
+  - 하지만 생성자 주입을 하는 경우 compileError가 발생한다.
+  - final 키워드를 사용할 수 있으며 불변을 강제 할 수 있다.
+#### lombok을 이용한 DI
+- 필드가 final로 되어 있으면 생성자주입 할 때 필수로 주입이 되어야 한다.
+- 생성자 주입시 생성자메서드가 단일이면 @Autowired를 생량할수 있다.(의존관계 주입방법 생성자 주입 참고)
+- Lombok의 @RequiredArgsConstructor를 사용하면 생성자를 만들 수 있다.
+- 즉, final을 가지고 있는 필드 변수를 가진 생성자를 만들고 @Autowired는 자동으로 생략되니 간단하게 DI를 진행할 수 있다.
