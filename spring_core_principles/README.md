@@ -559,11 +559,81 @@ class FixedDiscountPolicy implements DiscountPolicy{
         AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(AutoAppConfig.class,DiscountService.class);
 - 이렇게 되면 container에 등록이 될때 제네릭에 해당하는 class type의 Bean이 map과 list에 등록된다.
 #### 실무에서는 자동,수동 주입을 어떻게 사용할까?
-- 업무 로직 빈 : 웹을 지원하는 컨트롤러, 핵심 비즈니스 로직이 있는 서비스, 데이터 계층의 로직을 처리하는 리포지토리등이 모두 업무 로직이다.
+- 업무 로직 빈 : 웹을 지원하는 컨트롤 러, 핵심 비즈니스 로직이 있는 서비스, 데이터 계층의 로직을 처리하는 리포지토리등이 모두 업무 로직이다.
   - 유사한 패턴이 있는 경우, 로직의 수가 굉장히 많은경우 자동 빈 등록을 사용하는 것이 좋다. 
 - 기술 지원 빈 : 기술적인 문제나 공통 관심사(AOP)를 처리할 때 주로 사용한다. 데이터베이스 연결이나, 공통 로그 처리 처럽 업무 로직을 지원하기 위한 하부기술이나 공통 기술들이다.
   - 로직의 수는 적지만 미치는 영향이 광범위 한경우, 적용 여부 확인이 원활하지 않는 경우 수동으로 빈 등록을 해주는 것이 좋다.
 - 비즈니스 로직에서 수동 빈 등록을 사용하는 경우가 있다.
   - DiscountService()은 무엇이 빈으로 등록되어 있는지 확인하기 힘듬
   - class type으로 등록된 모든 빈을 찾아서 동적으로 사용하는 경우
-  - 차라리 수동으로 빈 등록을 하거나 특정 패키지에 묶는 방법이 편하다. 
+  - 차라리 수동으로 빈 등록을 하거나 특정 패키지에 묶는 방법이 편하다.
+### 빈 생성주기 콜백 (package : lifecycle)
+- 빈의 라이프 사이클은 다음과 같다
+  1. 스프링 컨테이너 생성
+  2. 스프링 빈 생성
+  3. 빈 의존관계 주입
+  4. 초기화 콜백
+  5. 사용
+  6. 소멸전 콜백
+  7. 스프링 종료
+- 따라서 bean을 호출했을때 rul이 없는 것은 당연하다.
+- 그러면 spring은 어떻게 url이 있는 상태로 bean을 사용하는 것일까?를 생각해 보면 초기화 콜백을 사용해야 한다는 결론이 나온다.
+- 스프링이 지원하는 빈 생성주기 콜백은 3가지가 있다.
+  - 인터페이스 (InitializingBean, DisposableBean)
+  - 설정 정보에 초기화 메서드, 종료 메서드 지정
+  - @PostConstruct, @PreDestory 애노테이션 지원
+
+>(참고)객체의 생성과 초기화를 분리하자
+생성자는 필수정보를 받고 메모리를 할당해서 객체를 생성하는 책임을 가진다. 반면에 초기화는 생성된 값을 사용하는 무거운 작업을 한다.
+따라서 생성자 안에서 무거운 작업을 하는 것 보다는 초기화 작업만 하는 것이 유지보수 관점에 유리하다.
+
+1. InitializingBean, DisposableBean사용
+```java
+    (InitializingBean)
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        //의존 관계 주입이 끝난 시첨
+        connect();
+        call("초기화 연결 메시지");
+    }
+    (DisposableBean)
+    @Override
+    public void destroy() throws Exception {
+        disConnect();
+    }
+```
+  - 단점
+    - 인터페이스는 스프링 전용 인터페이스로서 스프링에 의존 한다.
+    - 초기화, 소멸 메소드 명을 변경할 수 없다.(오버라이딩 했음)
+    - 내가 코드를 고칠수 없는 외부 라이브러리에 적용할 수 없다.
+2. 설정 정보에 초기화 메서드, 종료 메서드 지정
+```java
+    (BeanLifecycleTest.java)
+    @Bean(initMethod = "init" , destroyMethod = "destroy")
+    public NetworkClient networkClient(){
+        NetworkClient networkClient = new NetworkClient();
+        networkClient.setURL("http://naver.com");
+        return networkClient;
+    }
+```
+  - InitializingBean, DisposableBean의 단점을 어느정도 해결 가능
+  - destoryMethod에는 추론기능이 있다.
+    - 이 추론 기능은 close, shutdown이라는 함수명을 가지고 있으면 자동으로 호출해 준다.
+    - 따라서 해당 이름으로 종료 로직을 넣어주면 자동으로 호출해 줄 수 있다.
+3. @PostConstruct, @PreDestory 애노테이션 지원
+```java
+    @PostConstruct
+    public void init() throws Exception {
+        //의존 관계 주입이 끝난 시첨
+        connect();
+        call("초기화 연결 메시지");
+    }
+
+    @PreDestroy
+    public void destroy() throws Exception {
+        disConnect();
+    }
+```
+- 단점
+  - 외부 라이브러리에는 사용할 수없다...
+  - 따라서 외부 라이브러리에 적용하기 위해서는 @Bean 설정정보에 초기화, 종료 메서드를 지정해 주는 방식을 사용한다.
