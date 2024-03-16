@@ -107,7 +107,7 @@
 
 #### 회원 서비스
 <img src="img/memberServiceDiagram.png">
-<pre>
+```java
 public class MemberServiceImpl implements MemberService{
   private final MemberRepository memberRepository = new MemoryMemberRepository(); 
 
@@ -122,7 +122,7 @@ public class MemberServiceImpl implements MemberService{
   }
 
 }
-</pre>
+```
 - 위 코드에서 문제는 MemberServiceImpl는 MemberRepository와 MemorymemberRepository에 의존한다는 것
 - 즉 추상화(interface)에도 의존하고 구체화(class)에도 의존 한다는 것이 문제다.(DIP위반)
 #### 주문 서비스
@@ -132,11 +132,10 @@ public class MemberServiceImpl implements MemberService{
 
 - OrderServiceImpl에서 인스턴스를 변경해 주는것으로 할인 정책을 변경할 수 있다.
  
-<pre>
+```java
 //private final DiscountPolicy discountPolicy = new FixdiscountPolicy();
 private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
-</pre>
-
+```
 - 회원서비스와 동일하게 문제가 발생한다.
   - 역활과 구현을 분리했나? -> ok
   - 다형성을 활용하고 인터페이스와 구현 객체를 분리했나? -> ok
@@ -147,7 +146,7 @@ private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
     - <img src="img/OCP_violation.png">
   
 - 해결 방법은?
-<pre>private DiscountPolicy discountPolicy;</pre>
+```javaprivate DiscountPolicy discountPolicy;```
   - 위와 같은 방법을 사용하면 구현체에는 의존하지 않지만 NPE가 발생한다.
   - 즉 제 3자가 와서 discountPolicy에 구현체를 넣어줘야 한다.
 
@@ -155,7 +154,7 @@ private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
 - DIP를 지키기 위해서는 제 3자가 와서 discountPolicy에 구현체를 넣어줘야 한다.
 - 그 역활을 AppConfig가 한다.
   - 구현체 (OrderServiceImpl)
-  <pre>
+  ```java
   private final MemberRepository memberRepository;
   private final DiscountPolicy discountPolicy; 
   
@@ -163,20 +162,20 @@ private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
     this.memberRepository = memberRepository; 
     this.discountPolicy = discountPolicy;
   }
-  </pre>
+  ```
   - AppConfig (제 3자)
-  <pre>
+  ```java
   public OrderService orderService() {
       return new OrderServiceImpl(new MemoryMemberRepository(), new FixdiscountPolicy()); 
   }
-  </pre>
+  ```
 - OrderServiceImpl는 더이상 구현체에 의존하지 않는다.
 - 그저 추상 클래스만 의존하고 있을 뿐이다.
 - OrderServiceImpl 입장에서 보면 어떤 구현체가 들어올지는 모른다.
 - 어떤 구현체가 들어갈지는 AppConfig (제 3자)에 의해서 들어간다.
 - 즉, OrderServiceImpl는 의존 관계(역활)에 대한 고민은 두고 실행하는 것에 집중할 수 있다. 
 #### AppConfig 리팩터링
-<pre>
+```java
 public class AppConfig {
 
     public MemberService memberService() {
@@ -196,7 +195,7 @@ public class AppConfig {
     }
 
 }
-</pre>
+```
 - 이렇게 변경을 하면 추상클래스가 어떤 구현 클래스를 사용하는지 한눈에 알아 볼 수 있다.
 - MemberRepository의 구현체로 MemoryMemberRepository를 사용하며
 - DiscountPolicy의 구현체로 FixedDiscountPolicy를 사용한다.
@@ -226,7 +225,7 @@ public class AppConfig {
 - 스프링을 이용해서 DI를 하기 위해서는 스프링이 제공하는 애노테이션을 이용해야 한다.
 - IoC container에 Bena을 등록하기 위해서는 AppConfig class에 @Configuration을 부여하고
 - Bean을 등록하는 객체는 @Bean을 부여하면 된다.
-<pre>
+```java
 @Configuration
 public class AppConfig {
 
@@ -240,13 +239,13 @@ public class AppConfig {
         return new MemoryMemberRepository();
     }
 }
-</pre>
+```
 - main에서 IoC 컨테이너에 있는 Bean을 사용할 때에는 ApplicaationContext.class를 이용한다.
-<pre>
+```java
     ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
     MemberService memberService = applicationContext.getBean("memberService", MemberService.class);
     OrderService orderService = applicationContext.getBean("orderService", OrderService.class);
-</pre>
+```
 - 위와 같은 방법을 사용하면 IoC를 이용한 DI를 진행할 수 있다.
 - 문제는 이전에 사용했던 AppConfig.class를 main에서 객체로 생성하여 사용하는 방법이 더욱더 쉬운 방법이라는 것이다.
 
@@ -267,21 +266,21 @@ public class AppConfig {
 <img src="img/settingDependency.png">
 
 #### Exception Test
-<pre>
+```java
     @Test
     @DisplayName("해당하는 이름으로 조회했는데 없는 경우")
     void findBeanByNameNotFound() {
         assertThrows(NoSuchBeanDefinitionException.class,
                 () -> ac.getBean("memberservice", MemberService.class));
     }
-</pre>
+```
 
 ### 싱글톤 컨테이너
 #### 기존 코드의 문제점은 뭐가 있을까?
 - 하나의 주문이 들어오면 파생되는 많은 객체가 만들어짐 == TPS가 높으면 그만큼 객체의 수가 많아짐
   - 이걸 해결하기 위해서는 하나의 객체를 생성하고 그것을 공유하는 것이 유리하다.
   - 이때 사용하는 것이 싱글톤 패턴이다.
-<pre>
+```java
     private static final SingletonService getInstance = new SingletonService();
 
      public static SingletonService getInstance(){
@@ -290,7 +289,7 @@ public class AppConfig {
 
      private SingletonService() {
      }
-</pre>
+```
 - 위 코드와 같이 생성자를 부를 수 없도록 접근제어를 private로 막으면 singletonService의 생성자를 부를 수 있는 방법은
 - getInstance를 호출하는 메서드를 사용하는 방법 뿐이다.
 
@@ -323,12 +322,12 @@ public class AppConfig {
 - 따라서 stateless하게 구현해야 한다.
 ##### 어떻게 stateless하게 구현할까?
 - 필드 변수를 삭제하면 된다.
-<pre>
+```java
     public int order(String name , int price){
         System.out.println("name = " + name + " price = " + price );
         return price;
     }
-</pre>
+```
 ##### @Configuration과 싱글톤
 - ConfigurationSingletonTest.class 에서 configurationTest()를 보면 AppConfig.class의 memberRepository.class를 3번 호출한다.
 - 근데 java code를 보면 new Repository를 3번 하기 때문에 싱글톤으로 작동이 되면 안된다.
@@ -496,3 +495,75 @@ private DiscountPolicy discountPolicy;
 - 생성자 주입시 생성자메서드가 단일이면 @Autowired를 생량할수 있다.(의존관계 주입방법 생성자 주입 참고)
 - Lombok의 @RequiredArgsConstructor를 사용하면 생성자를 만들 수 있다.
 - 즉, final을 가지고 있는 필드 변수를 가진 생성자를 만들고 @Autowired는 자동으로 생략되니 간단하게 DI를 진행할 수 있다.
+#### 자동 의존관계주입을 사용하는데 만약 bean이 두개 이상 있는 경우
+```java
+@Component
+class RateDiscountPolicy implements DiscountPolicy{
+    
+}
+@Component
+class FixedDiscountPolicy implements DiscountPolicy{
+    
+}
+```
+- 위와 같이 있는 경우 의존관계 주입을 할때 class type만 인수로 사용하기 때문에 DiscountPolicy의 bean이 2개로 잡힌다.
+- 이것을 해결하는 방법은 다음과 같다
+- 수동주입
+- 자동주입
+  - Autowired 필드 명 매칭 
+    ```java
+        this.discountPolicy = fixediscountPolicy;
+    ```
+  - @Quilifier 끼리 매칭 : 추가적인 이름 부여(변경하는 것이 아님)
+    ```java
+      @Quilifier("mainDiscountPolicy")
+      class ReatDiscountPolicy{}
+      
+      class OrderserviceImpl implement OrderService{
+          @Autowired
+          public OrderServiceImpl(MemberRepository memberRepository, @Qualifier("mainDiscountPolicy") DiscountPolicy fixediscountPolicy) {
+          this.memberRepository = memberRepository;
+          this.discountPolicy = fixediscountPolicy;
+          }  
+        }
+  - @Primary 사용 : 우선순위를 지정 
+- @Quilifer, @Primary 활용
+  - 기본적으로 주로 사용하는 것을 @Primary로 지정해 두고 추가적으로 변경점이 있는 사용은 @Quilifer를 사용한다.
+- @Quilifer, @Primary 우선순위
+  - 만약 두개 다 있는 경우 @Quilifer가 우선순위를 가지고 동작 한다.
+
+#### 해당 타입의 모든 빈을 조회하는 방법 (AllBean.test)
+- 클라이언트가 할인의 종류를 선택하는 경우 모든 해당 타입의 모든 빈을 가져와야 한다.
+```java
+    static class  DiscountService{
+        private final Map<String, DiscountPolicy> policyMap;
+        private final List<DiscountPolicy> discountPolicies;
+
+        @Autowired
+        public DiscountService(Map<String, DiscountPolicy> policyMap, List<DiscountPolicy> discountPolicies) {
+            this.policyMap = policyMap;
+            this.discountPolicies = discountPolicies;
+            System.out.println("policyMap = " + policyMap);
+            System.out.println("discountPolicies = " + discountPolicies);
+        }
+
+        public int discount(Member member, int i, String discountPolicies) {
+            DiscountPolicy discountPolicy = policyMap.get(discountPolicies);
+            int discount = discountPolicy.discount(member, i);
+            return discount;
+        }
+    }
+```
+- AnnotationConfigApplicationContext의 생성자에 파라미터를 지정한다.
+  ```java
+        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(AutoAppConfig.class,DiscountService.class);
+- 이렇게 되면 container에 등록이 될때 제네릭에 해당하는 class type의 Bean이 map과 list에 등록된다.
+#### 실무에서는 자동,수동 주입을 어떻게 사용할까?
+- 업무 로직 빈 : 웹을 지원하는 컨트롤러, 핵심 비즈니스 로직이 있는 서비스, 데이터 계층의 로직을 처리하는 리포지토리등이 모두 업무 로직이다.
+  - 유사한 패턴이 있는 경우, 로직의 수가 굉장히 많은경우 자동 빈 등록을 사용하는 것이 좋다. 
+- 기술 지원 빈 : 기술적인 문제나 공통 관심사(AOP)를 처리할 때 주로 사용한다. 데이터베이스 연결이나, 공통 로그 처리 처럽 업무 로직을 지원하기 위한 하부기술이나 공통 기술들이다.
+  - 로직의 수는 적지만 미치는 영향이 광범위 한경우, 적용 여부 확인이 원활하지 않는 경우 수동으로 빈 등록을 해주는 것이 좋다.
+- 비즈니스 로직에서 수동 빈 등록을 사용하는 경우가 있다.
+  - DiscountService()은 무엇이 빈으로 등록되어 있는지 확인하기 힘듬
+  - class type으로 등록된 모든 빈을 찾아서 동적으로 사용하는 경우
+  - 차라리 수동으로 빈 등록을 하거나 특정 패키지에 묶는 방법이 편하다. 
