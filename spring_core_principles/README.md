@@ -637,3 +637,80 @@ class FixedDiscountPolicy implements DiscountPolicy{
 - 단점
   - 외부 라이브러리에는 사용할 수없다...
   - 따라서 외부 라이브러리에 적용하기 위해서는 @Bean 설정정보에 초기화, 종료 메서드를 지정해 주는 방식을 사용한다.
+### 빈 스코프
+- 스프링 컨테이너 안에서 빈이 존자해난 영역을 Bean scope라고 한다.
+#### 빈 스코프의 종류
+- 싱글톤 : 기본 스코프로서 스프링 컨테이너의 시작과 종료까지 유지되는 가장 넓은 범위의 스코프이다.
+<img src="img/singletonBean.png">
+  - 싱글톤 스코프의 빈을 스프링 컨테이너에 요청한다.
+  - 스프링 컨테이너는 본인이 관리하는 빈을 반환한다.
+  - 이후에 스프링 컨테이너에 같은 요청이 와도 같은 빈을 반환한다.
+- 프로토타입 : 스프링 컨테이너는 프로토타입 빈의 생성과 의존관계 주입까지만 관여하고 더는 관리하지 않는 매우 짧은 범위의 스코프다.
+<img src="img/prototypeBean1.png">
+  - 프로토타입 스코프의 빈을 스프링 컨테이너에 요청한다
+  - 스프링 컨테이너는 이 시점에 빈을 생성하고 의존관계를 주입한다.
+<img src="img/prototypeBean2.png">
+  - 스프링 컨테이너는 생성한 프로토타입 빈을 클라이언트에 반환한다.
+  - 이후에 스프링 컨테이너에 같은 요청이 오면 항상 새로운 프로토타입 빈을 생성해서 반환한다.
+  - <b>반환화는 과정이 마지막임으로 @PreDestory같은 종료 메서드는 호출되지 않는다.</b>
+- 웹 관련 스코프
+  - 웹 환경에서만 동작한다.
+    - Requset: 웹 요청이 들어오고 나갈때 까지 유지되는 스코프
+    - Session: 웹 세션이 생성되고 종료될 때 까지 유지되는 스코프
+    - Application: 웹의 서블릿 컨텍스트와 같은 범위로 유지되는 스코프
+#### 프로토타입 스코프의 문제점 : 싱글톤 빈과 함계 사용하면 생기는 문제
+- 프로토타입은 빈 생성과 의존관계를 주입한다.
+- 그러면 싱글톤 스코프를 사용할때 프로토타입 빈을 가져오면 어떻게 될까?
+- 프로토 타입임으로 싱글톤 빈을 호출할때마다 프로토 타입 빈을 생성하는 것이 아닌,
+- 처음 프로토 타입 빈을 생성하여 의존관계를 주입한 상태로 싱글톤 빈을 호출할 때마다 같은 프로토 타입빈을 사용한다.
+- 그 이유는 프로토 타입은 한번 반환하고 의존관계를 주입후 이후의 관리는 해당 클래스에 위임하기 때문이다.
+- SingletonWithPrototypeTest1.class의 singletonClientUsePrototype()에서 확인하는 것과 같이 1을 반환하는 것이 아닌 2를 반환한다.
+- 즉 싱글톤 스코프를 사용하는 빈이 생성될때 프로토타입 스코프의 빈을 사용하면 처음 싱글톤을 생성하는 그 시점에 프로토 타입을 생성한다.
+- 이후에 싱글톤을 다시 한다 해도 새로운 프로토타입 빈을 생성하는 것이 아닌 기존에 생성되어 의존관계가 주입된 프로토타입 빈을 사용한다.
+#### 프로토타입 스코프 빈 과 싱글톤 빈을 같이 사용하는 방법
+1. ```java
+        @Autowired
+        private AnnotationConfigApplicationContext annotationConfigApplicationContext;
+   ```
+   - 가장 단순한 방법으로 해당 컨테이너를 불러오는 방법을 사용
+2. ```java
+        @Autowired
+        private ObjectProvider<PrototypeBean> prototypeBeanProvider;
+   ```
+   - spring이 가지고 있는 objectProvider를 사용하는 방법
+3. ```java
+        @Autowired
+        private final Provider<PrototypeBean> provider;
+   ```
+   - javax.inject.provider를 사용한 방법
+- 위 3가지 방법중 주로 ObjectProvider와 Provider를 사용하는데 가장 스프링이 제공하는 ObjectProvider를 사용하면 라이브러리 추가 없이 사용할 수 있음
+- 하지만 다른 컨테이너에 있는 빈을 사용하는 경우 Provider를 사용해야한다는 제약이 있음
+
+#### web scope
+<img src="img/requestscope.png">
+
+- request : http요청 하나가 들어오고 response될 때가지 인스턴스가 생성되고 관리된다.
+- session : sessiong과 동일한 생명 주기를 가지는 스코프
+- application : 서블릿 컨텍스트와 동일한 생명 주기를 가지는 스코프
+- websocket : 웹 소켓과 동일한 생명 주기를 가지는 스코프
+
+#### 스코프와 provider
+- 핵심은 결국 내가 요청한 시점에 빈을 생성하고 싶은 경우 javax의 Provider 또는 Spring의 ObjectPrivider를 사용하면 된다.
+
+#### 스코프와 프록시
+<img src="img/scopeProxy.png">
+
+- 가짜 프록시 객체는 내부의 진짜 myLogger를 찾는 방법을 알고 있다.
+- 클라이언트가 myLogger를 호출하면 프록시 객체가 myLooger를 호출해 준다.
+- 따라서 클라이언트 입장에서 보면 myLogger가 프록시를 통해서 받은 것인지 확인 할수 없다.
+
+#### 프록시 내부동작 방법
+1. CGILB으로 가짜 프록시 객체를 만들어서 주입한다.
+2. 이 프록시 객체 안에는 실제 빈을 요청하는 위임 로직이 들어있다.
+3. 따라서 로직상에 있는 객체는 request scope와는 관계가 없다. 추후에 다시 주입된다.
+
+#### 프록시 특징
+- 프록시 객체 덕분에 클라이언트는 마치 싱글톤 빈을 사용하듯이 편리하게 reqeust scope를 사용할 수 있다.
+- 사실 Provider를 사용하든, 프록시를 사용하든 핵심 아이디어는 진짜 객체 조회를 꼭 필요한 시점까지 지연처리 한다는 점이다.
+- 단지 애노테이션 설정 변경만으로 원본 객체를 프록시 객체로 대체할 수 있다.
+- 꼭 웹 스코프가 아니여도 프록시는 사용할 수 있다.
