@@ -1,0 +1,40 @@
+server:
+  port: 8089
+
+#logging:
+#  level:
+#    org.springframework: DEBUG
+
+spring:
+  messages:
+    basename: messages
+  datasource:
+    url: jdbc:h2:mem:testdb #url 정보
+    username: sa #url에 해당하는 username
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # table 생성과 데이터 저장을 할 수 있도록 설정 
+    show-sql: true #query 날리는거 보이게 하는 설정
+    defer-datasource-initialization: true #초기 데이터가 있는 경우 하이버네이트 초기화 이후에 자동으로 작동할 수 있도록 설정
+  h2:
+    console:
+      enabled: true #사용할 수 있도록 하는 설정
+      settings:
+        web-allow-others: true #console 사용가능할 수 있도록
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ant_path_matcher
+#  security:
+#    user:
+#      name: joonsoung93
+#      password: wnstjd93!
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+
+
+
