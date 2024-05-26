@@ -1,4 +1,4 @@
-package hello.servlet.basic.web.servlet;
+package hello.servlet.web.servlet;
 
 import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;

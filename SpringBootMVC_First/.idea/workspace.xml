@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6d20c9b3-e058-4530-94c4-9220aebab35e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/SpringBootMVC_First">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/SpringBootMVC_First">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2gPUItHe8byhXPwrlzGlL637bBU" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "spring__MVC__first",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/adminmaster/IdeaProjects/SpringBootClasses/SpringBootMVC_First/SpringBootMVC_First",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\adminmaster\IdeaProjects\SpringBootClasses\SpringBootMVC_First\SpringBootMVC_First\src\main\java\hello\servlet\basic\web\frontcontroller" />
+      <recent name="C:\Users\adminmaster\IdeaProjects\SpringBootClasses\SpringBootMVC_First\SpringBootMVC_First\src\main\java\hello\servlet\basic\web" />
+      <recent name="C:\Users\adminmaster\IdeaProjects\SpringBootClasses\SpringBootMVC_First\SpringBootMVC_First\src\main" />
+      <recent name="C:\Users\adminmaster\IdeaProjects\SpringBootClasses\SpringBootMVC_First\SpringBootMVC_First\src\main\webapp\WEB-INF" />
+      <recent name="C:\Users\adminmaster\IdeaProjects\SpringBootClasses\SpringBootMVC_First\SpringBootMVC_First\src\main\java\hello\servlet\basic\web\servletMVC" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.SpringBootMvcFirstApplication">
+    <configuration name="SpringBootMVC_First [test]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/SpringBootMVC_First" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="SpringBootMvcFirstApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="servlet.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="hello.servlet.SpringBootMvcFirstApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="hello.servlet.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.SpringBootMvcFirstApplication" />
+        <item itemvalue="Gradle.SpringBootMVC_First [test]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6d20c9b3-e058-4530-94c4-9220aebab35e" name="Changes" comment="" />
+      <created>1715598630586</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1715598630586</updated>
+      <workItem from="1715598634559" duration="3430000" />
+      <workItem from="1715602094994" duration="94000" />
+      <workItem from="1715602202203" duration="1010000" />
+      <workItem from="1715603221746" duration="823000" />
+      <workItem from="1715645554808" duration="32000" />
+      <workItem from="1715648852052" duration="25000" />
+      <workItem from="1716376208653" duration="471000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

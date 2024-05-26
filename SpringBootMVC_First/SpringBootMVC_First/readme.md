@@ -130,8 +130,37 @@
 ### VMC 패턴의 한계
 - 화면을 이동할때 servlet을 통해서 이동해야 하는 규칙이 있어서 중복코드가 많이 있음
   - ```java
-        String viewPath = "/WEB-INF/views/new-from.jsp";
+        String viewPath = "/WEB-INF/views/new-form.jsp";
         RequestDispatcher requestDispatcher = req.getRequestDispatcher(viewPath);
         requestDispatcher.forward(req,resp);
 - 공통처리가 어렵다.
   - 로그 출력과 같은 공통 처리를 각 servlet에 넣어야 한다.
+
+### 프론트 컨트롤러의 특징
+1. 프론트 컨트롤러 서블릿 하나로 클라이언트의 요청을 받음
+2. 프론트 컨트롤러가 요청에 맞는 컨트롤러를 찾아서 호출
+3. 공통 처리 가능
+4. 프론트 컨트롤러를 제외한 나머지 컨트롤러는 서블릿을 사용하지 않아도 됨
+
+<img src="image/before_front_controller.png">
+<img src="image/after_front_controller.png">
+
+### 프론트 컨트롤러 도입 (V1)
+<img src="image/introdcing_front_controller.png">
+
+### view 분리 (V2)
+<img src="image/separation_view.png">
+
+### model 분리 (V3)
+<img src="image/separation_model.png">
+
+### Controller에서 view를 반환 (V4)
+<img src="image/retrun-view-on-controller.png">
+
+### adepter pattern (V5)
+- generic으로 선언되어 있기 때문에 v4와 v3를 같이 사용할 수 없다.
+- 하지만 상황에 따라서 선택하여 사용할 수 있도록 할 수 있다.
+
+<img src="image/adepter-pattern-in-controller.png">
+
+

@@ -1,4 +1,4 @@
-package hello.servlet.basic.web.servletMVC;
+package hello.servlet.web.servletMVC;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -14,7 +14,7 @@ public class MvcMemberFormServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String viewPath = "/WEB-INF/views/new-from.jsp";
+        String viewPath = "/WEB-INF/views/new-form.jsp";
         RequestDispatcher requestDispatcher = req.getRequestDispatcher(viewPath);
         requestDispatcher.forward(req,resp);
 
