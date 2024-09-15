@@ -33,7 +33,7 @@
   - HTTP 응답 정보를 편리하게 만들 수 있는 HttpServletResponse
   - 개발자는 HTTP 스팩을 매우 편리하게 사용한다.
 ### servlet 동작과정
-<img src="image/servlet_running.png">
+<img src="/image/servlet_running.png">
 
 ### 서블릿 컨테이너
 - 톰캣처럼 서블릿을 지우너하는 WAS를 서블릿 컨테이너라고 한다.
@@ -146,7 +146,7 @@
 <img src="image/after_front_controller.png">
 
 ### 프론트 컨트롤러 도입 (V1)
-<img src="image/introdcing_front_controller.png">
+<img src="image/introducing_front_controller.png">
 
 ### view 분리 (V2)
 <img src="image/separation_view.png">
@@ -158,8 +158,7 @@
 <img src="image/retrun-view-on-controller.png">
 
 ### adepter pattern (V5)
-- generic으로 선언되어 있기 때문에 v4와 v3를 같이 사용할 수 없다.
-- 하지만 상황에 따라서 선택하여 사용할 수 있도록 할 수 있다.
+- MyHandlerAdaperr을 상속받아 사용하는 것으로 되어 있기 때문에 v4와 v3를 같이 사용할 수 없다.
 
 <img src="image/adepter-pattern-in-controller.png">
 
