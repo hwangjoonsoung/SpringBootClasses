@@ -1,10 +1,9 @@
 package me.hwangjoonsoung.springbootdeveloper.repository;
 
-import me.hwangjoonsoung.springbootdeveloper.dto.Member;
+import me.hwangjoonsoung.springbootdeveloper.domain.Article;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member,Long> {
-
+public interface BlogRepository extends JpaRepository<Article,Long> {
 }
