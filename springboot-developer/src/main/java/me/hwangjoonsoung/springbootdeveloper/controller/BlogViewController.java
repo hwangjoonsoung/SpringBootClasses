@@ -17,10 +17,9 @@ public class BlogViewController {
 
     private final BlogService blogService;
 
-    @GetMapping("/article")
+    @GetMapping("/articles")
     public String getArticles(Model model){
         List<ArticleListViewResponse> list = blogService.getAllArticles().stream().map(ArticleListViewResponse::new).toList();
-        System.out.println("list = " + list.get(0).getId());
         model.addAttribute("articles", list);
         return "articleList";
 

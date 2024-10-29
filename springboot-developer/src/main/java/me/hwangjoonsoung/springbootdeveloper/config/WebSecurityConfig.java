@@ -25,8 +25,7 @@ public class WebSecurityConfig {
     // 인증 인가를 적용하는 곳은 정적 리소스에는 적용할 필요가 없다.
     @Bean
     public WebSecurityCustomizer configure(){
-//        return web -> web.ignoring().requestMatchers(toH2Console()).requestMatchers("/static/**");
-        return web -> web.ignoring().requestMatchers("/static/**");
+        return web -> web.ignoring().requestMatchers(toH2Console()).requestMatchers("/static/**");
         /*
         * 트러블 슈팅
         * org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'org.springframework.boot.autoconfigure.h2.H2ConsoleProperties' available
