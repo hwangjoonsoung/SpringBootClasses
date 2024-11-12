@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.security.spec.RSAOtherPrimeInfo;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,8 +30,12 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "nickname", unique = true)
+    private String nickname;
+
     @Builder
-    public User(String email, String password , String auth) {
+    public User(String email, String password , String nickname) {
+        this.nickname = nickname;
         this.email = email;
         this.password = password;
     }
@@ -68,5 +73,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public User update(String nickname) {
+        this.nickname = nickname;
+        return this;
     }
 }

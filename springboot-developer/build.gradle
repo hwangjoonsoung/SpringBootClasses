@@ -21,6 +21,7 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-apo:2.3.1'
 // https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'

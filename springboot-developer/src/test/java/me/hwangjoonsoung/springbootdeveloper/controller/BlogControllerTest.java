@@ -5,6 +5,7 @@ import me.hwangjoonsoung.springbootdeveloper.domain.Article;
 import me.hwangjoonsoung.springbootdeveloper.dto.AddArticleRequest;
 import me.hwangjoonsoung.springbootdeveloper.dto.UpdateArticleRequest;
 import me.hwangjoonsoung.springbootdeveloper.repository.BlogRepository;
+import me.hwangjoonsoung.springbootdeveloper.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
@@ -43,11 +45,14 @@ class BlogControllerTest {
 
     @Autowired
     BlogRepository blogRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @BeforeEach
     public void mockMvcSetup(){
-        MockMvcBuilders.webAppContextSetup(context).build();
         blogRepository.deleteAll();
+        userRepository.save()
+
     }
 
     @Test

@@ -11,6 +11,16 @@ spring:
   h2:
     console:
       enabled: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 455781019857-u7163nq2sae1upaa5bep1mi673vd0314.apps.googleusercontent.com
+            client-secret: 455781019857-u7163nq2sae1upaa5bep1mi673vd0314.apps.googleusercontent.com
+            scope:
+              - email
+              - profile
 
 jwt:
   issuer: joonsoung93@naver.com
