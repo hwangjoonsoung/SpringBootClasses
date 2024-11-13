@@ -46,15 +46,15 @@ public class TokenProvider {
 
     //토큰 유효성 검사
     public boolean validToken(String token) {
-        boolean result = false;
         try {
-            Jwts.parser().setSigningKey(jwtProperties.getSecretKey()).parseClaimsJws(token);
-            result = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            Jwts.parser()
+                    .setSigningKey(jwtProperties.getSecretKey())
+                    .parseClaimsJws(token);
 
-        return result;
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     // 토큰 인정 정보 가져오기
